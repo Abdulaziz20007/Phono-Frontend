@@ -11,7 +11,7 @@ import {
   HomepageData,
 } from "./types";
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "https://api.phono.ligma.uz";
 
 // Default fetch options to apply to all requests
 const defaultOptions = {
