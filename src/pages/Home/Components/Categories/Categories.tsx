@@ -3,17 +3,19 @@ import { Brand } from "../../../../api/types";
 import "./Categories.scss";
 
 interface CategoriesProps {
-  brands: Brand[];
+  brands: Brand[] | undefined;
 }
 
-function Categories({ brands }: CategoriesProps) {
-  const allCategories = [
-    ...brands.map((brand) => ({
-      id: brand.id,
-      name: brand.name,
-      icon: brand.logo,
-    })),
-  ];
+function Categories({ brands = [] }: CategoriesProps) {
+  const allCategories = brands
+    ? [
+        ...brands.map((brand) => ({
+          id: brand.id,
+          name: brand.name,
+          icon: brand.logo,
+        })),
+      ]
+    : [];
 
   return (
     <div className="categories-section">
