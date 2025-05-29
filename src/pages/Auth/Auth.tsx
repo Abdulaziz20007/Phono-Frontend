@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 
 function Auth() {
   const router = useRouter();
-  const { login } = useUser();
+  const { login, isAuthenticated, isLoading } = useUser();
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -29,6 +29,13 @@ function Auth() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [uuid, setUuid] = useState("");
+
+  // Redirect if user is already authenticated
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.push("/");
+    }
+  }, [isAuthenticated, isLoading, router]);
 
   // Update timer based on expire time
   useEffect(() => {

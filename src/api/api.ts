@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   RegisterPayload,
   RegisterResponse,
@@ -11,113 +12,146 @@ import {
   HomepageData,
 } from "./types";
 
-const BASE_URL = "https://api.phono.ligma.uz";
+// Determine if we're running on the client side
+const isBrowser = typeof window !== "undefined";
 
-// Default fetch options to apply to all requests
-const defaultOptions = {
+// Use absolute URL to ensure direct client-side API calls
+const BASE_URL = "http://localhost:3000";
+
+// Create an axios instance with default configuration
+const axiosInstance = axios.create({
+  baseURL: BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
-  credentials: "include" as RequestCredentials, // Important for cookies/authentication
-};
-
-// Helper to add authorization header when needed
-const withAuth = (token: string) => ({
-  ...defaultOptions,
-  headers: {
-    ...defaultOptions.headers,
-    Authorization: `Bearer ${token}`,
-  },
+  withCredentials: true, // Important for cookies/authentication
 });
 
-// Helper for error handling
-const handleApiResponse = async (response: Response) => {
-  if (!response.ok) {
-    try {
-      const errorData = await response.json();
-      throw new Error(errorData.message || `API error: ${response.status}`);
-    } catch (parseError) {
-      // If the error response isn't valid JSON
-      throw new Error(`API error: ${response.status} ${response.statusText}`);
+// Add a request interceptor to include auth token when available
+axiosInstance.interceptors.request.use(
+  (config) => {
+    // Only access localStorage in the browser
+    if (isBrowser) {
+      const token = localStorage.getItem("accessToken");
+      if (token) {
+        config.headers["Authorization"] = `Bearer ${token}`;
+      }
     }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
+);
 
-  return response.json();
-};
-
+// Simplified export of API methods
 export const api = {
   auth: {
     register: async (userData: RegisterPayload): Promise<RegisterResponse> => {
-      const response = await fetch(`${BASE_URL}/auth/register`, {
-        method: "POST",
-        ...defaultOptions,
-        body: JSON.stringify(userData),
-      });
-
-      return handleApiResponse(response);
+      try {
+        const response = await axiosInstance.post("/auth/register", userData);
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          throw new Error(
+            error.response.data.message || `API error: ${error.response.status}`
+          );
+        }
+        throw new Error("Network error occurred");
+      }
     },
 
     verifyOTP: async (
       verificationData: VerifyOTPPayload
     ): Promise<TokenResponse> => {
-      const response = await fetch(`${BASE_URL}/auth/verify-otp`, {
-        method: "POST",
-        ...defaultOptions,
-        body: JSON.stringify(verificationData),
-      });
-
-      return handleApiResponse(response);
+      try {
+        const response = await axiosInstance.post(
+          "/auth/verify-otp",
+          verificationData
+        );
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          throw new Error(
+            error.response.data.message || `API error: ${error.response.status}`
+          );
+        }
+        throw new Error("Network error occurred");
+      }
     },
 
     login: async (credentials: LoginPayload): Promise<TokenResponse> => {
-      const response = await fetch(`${BASE_URL}/auth/login`, {
-        method: "POST",
-        ...defaultOptions,
-        body: JSON.stringify(credentials),
-      });
-
-      return handleApiResponse(response);
+      try {
+        const response = await axiosInstance.post("/auth/login", credentials);
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          throw new Error(
+            error.response.data.message || `API error: ${error.response.status}`
+          );
+        }
+        throw new Error("Network error occurred");
+      }
     },
 
     refreshToken: async (): Promise<TokenResponse> => {
-      const response = await fetch(`${BASE_URL}/auth/refresh-token`, {
-        method: "POST",
-        ...defaultOptions,
-      });
-
-      return handleApiResponse(response);
+      try {
+        const response = await axiosInstance.post("/auth/refresh-token");
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          throw new Error(
+            error.response.data.message || `API error: ${error.response.status}`
+          );
+        }
+        throw new Error("Network error occurred");
+      }
     },
 
     logout: async (): Promise<void> => {
-      const response = await fetch(`${BASE_URL}/auth/logout`, {
-        method: "POST",
-        ...defaultOptions,
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Logout failed");
+      try {
+        await axiosInstance.post("/auth/logout");
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          throw new Error(error.response.data.message || "Logout failed");
+        }
+        throw new Error("Network error occurred");
       }
     },
   },
+
   user: {
     me: async (token: string): Promise<UserProfile> => {
-      const response = await fetch(`${BASE_URL}/user/me`, {
-        method: "GET",
-        ...withAuth(token),
-      });
-
-      return handleApiResponse(response);
+      try {
+        // Override the authorization header for this specific request
+        const response = await axiosInstance.get("/user/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          throw new Error(
+            error.response.data.message || `API error: ${error.response.status}`
+          );
+        }
+        throw new Error("Network error occurred");
+      }
     },
   },
+
   home: {
     getData: async (): Promise<HomepageData> => {
-      const response = await fetch(`${BASE_URL}/web`, {
-        method: "GET",
-        ...defaultOptions,
-      });
-
-      return handleApiResponse(response);
+      try {
+        const response = await axiosInstance.get("/web");
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          throw new Error(
+            error.response.data.message || `API error: ${error.response.status}`
+          );
+        }
+        throw new Error("Network error occurred");
+      }
     },
   },
 };

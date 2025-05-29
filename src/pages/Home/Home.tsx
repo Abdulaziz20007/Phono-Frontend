@@ -30,7 +30,9 @@ function Home() {
       }
     };
 
-    fetchData();
+    if (typeof window !== "undefined") {
+      fetchData();
+    }
   }, []);
 
   if (loading) {

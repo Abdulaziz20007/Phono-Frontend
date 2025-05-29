@@ -11,6 +11,9 @@ import { api } from "../api/api";
 import { UserProfile } from "../api/types";
 import toast from "react-hot-toast";
 
+// Ensure we're running on the client side
+const isBrowser = typeof window !== "undefined";
+
 interface UserContextType {
   user: UserProfile | null;
   isLoading: boolean;
@@ -27,6 +30,9 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
+    // Only run in the browser
+    if (!isBrowser) return;
+
     const checkAuthentication = async () => {
       const token = localStorage.getItem("accessToken");
       if (token) {
