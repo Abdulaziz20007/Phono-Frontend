@@ -15,11 +15,11 @@ interface ProductCardProps {
 }
 
 interface ProductListingProps {
-  products: Product[];
-  brands: Brand[];
+  products: Product[] | undefined;
+  brands: Brand[] | undefined;
 }
 
-function ProductListing({ products, brands }: ProductListingProps) {
+function ProductListing({ products = [], brands = [] }: ProductListingProps) {
   // Get main image URL from product images array
   const getMainImage = (product: Product): string | undefined => {
     if (!product.images || product.images.length === 0) return undefined;
@@ -38,10 +38,13 @@ function ProductListing({ products, brands }: ProductListingProps) {
     }
 
     // Fallback to using brand_id and model_id with the brands array
+    if (!brands || brands.length === 0) return "Unknown Product";
+
     const brand = brands.find((b) => b.id === product.brand_id);
     if (!brand) return "Unknown Product";
 
-    const model = brand.models.find((m) => m.id === product.model_id);
+    const model =
+      brand.models && brand.models.find((m) => m.id === product.model_id);
     return `${brand.name} ${model ? model.name : "Unknown Model"}`;
   };
 
