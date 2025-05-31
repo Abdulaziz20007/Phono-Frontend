@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import "./globals.scss";
 import { UserProvider } from "../context/UserContext";
 import { Toaster } from "react-hot-toast";
 

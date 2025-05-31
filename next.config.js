@@ -1,11 +1,10 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  /* config options here */
-  experimental: {
-    // Disable React Server Components
-    serverActions: false,
-    serverComponentsExternalPackages: [],
+// next.config.js
+module.exports = {
+  // ...other config...
+  images: {
+    domains: [
+      "chelak.s3.eu-central-1.amazonaws.com",
+      // add any other domains you need
+    ],
   },
 };
-
-module.exports = nextConfig;
