@@ -45,7 +45,7 @@ const mapApiProfileToLocalProfile = (
     phone: apiProfile.phone,
     avatar: apiProfile.avatar || "/images/placeholder-avatar.jpg",
     balance: apiProfile.balance,
-    usernameForDisplay: `${apiProfile.name}_${apiProfile.id}`, // Generate a display name
+    usernameForDisplay: `${apiProfile.name} ${apiProfile.surname}`, // Generate a display name
     dob: apiProfile.dob || null,
     appLanguage: "ru", // Default to Russian if not provided by API
     emails: Array.isArray(apiProfile.emails) ? apiProfile.emails : [],

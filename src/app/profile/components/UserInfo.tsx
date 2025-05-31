@@ -65,13 +65,13 @@ export default function UserInfo({ user, onEditClick }: UserInfoProps) {
     <UserInfoContainer>
       <Avatar
         src={user.avatar || "/images/default-avatar.png"} // default-avatar.png public/images/ da
-        alt={user.usernameForDisplay}
+        alt={`${user.name} ${user.surname}`}
         width={80}
         height={80}
         priority
       />
       <UserDetails>
-        <h2>{user.usernameForDisplay}</h2>
+        <h2>{`${user.name} ${user.surname}`}</h2>
         <p>Баланс: {user.balance.toLocaleString("ru-RU")} сум</p>
       </UserDetails>
       <EditButton onClick={onEditClick}>
