@@ -69,7 +69,7 @@ export const useProfileData = () => {
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("accessToken");
       if (!token) {
-        router.push("/auth/login");
+        router.push("/auth");
         return false;
       }
       return true;
@@ -107,7 +107,7 @@ export const useProfileData = () => {
       ) {
         if (typeof window !== "undefined") {
           localStorage.removeItem("accessToken");
-          router.push("/auth/login");
+          router.push("/auth");
         }
       }
     } finally {
@@ -263,7 +263,15 @@ export const useProfileData = () => {
   const addAddress = useCallback(
     async (addressData: Omit<UserAddress, "id" | "user_id">) => {
       try {
-        const newAddress = await api.user.addAddress(addressData);
+        // Convert null to undefined for lat and long to match the API type
+        const apiAddressData = {
+          name: addressData.name,
+          address: addressData.address,
+          lat: addressData.lat === null ? undefined : addressData.lat,
+          long: addressData.long === null ? undefined : addressData.long
+        };
+        
+        const newAddress = await api.user.addAddress(apiAddressData);
 
         setUser((prevUser) => {
           if (!prevUser) return null;
@@ -325,7 +333,7 @@ export const useProfileData = () => {
       // Clear local storage and redirect to login page
       if (typeof window !== "undefined") {
         localStorage.removeItem("accessToken");
-        window.location.href = "/auth/login";
+        window.location.href = "/auth";
       }
     } catch (err) {
       console.error("Error logging out:", err);
@@ -340,7 +348,7 @@ export const useProfileData = () => {
       // Clear local storage and redirect to login page
       if (typeof window !== "undefined") {
         localStorage.removeItem("accessToken");
-        window.location.href = "/auth/login";
+        window.location.href = "/auth";
       }
     } catch (err) {
       console.error("Error deleting account:", err);

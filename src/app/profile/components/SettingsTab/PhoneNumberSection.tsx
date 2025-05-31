@@ -9,7 +9,7 @@ import {
   ModalCloseButton,
   Input,
   Button,
-} from "../../page"; // Umumiy styled komponentlar page.tsx dan
+} from "../../components/ui/SharedComponents"; // Shared styled components
 import OtpInputModal from "./modals/OtpInputModal";
 import ConfirmDeleteModal from "./modals/ConfirmDeleteModal";
 

@@ -36,6 +36,7 @@ export interface UserProfile {
   balance: number;
   currency_id: number;
   is_active: boolean;
+  dob?: string | null; // Add date of birth field
   addresses: any[];
   additional_phones: {
     id: number;

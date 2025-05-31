@@ -2,7 +2,7 @@ import React from "react";
 import { AppProps } from "next/app";
 import { UserProvider } from "../context/UserContext";
 import { Toaster } from "react-hot-toast";
-import "../styles/globals.css";
+import "../app/globals.scss";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

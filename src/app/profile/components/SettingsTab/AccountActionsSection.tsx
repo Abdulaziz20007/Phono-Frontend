@@ -7,7 +7,7 @@ import {
   ModalContent,
   ModalCloseButton,
   Button,
-} from "../../page";
+} from "../../components/ui/SharedComponents";
 // ConfirmDeleteModal o'rniga umumiyroq ConfirmActionModal ishlatamiz
 
 interface AccountActionsSectionProps {

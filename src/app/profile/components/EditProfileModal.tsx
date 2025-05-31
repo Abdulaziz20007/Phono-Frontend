@@ -9,7 +9,7 @@ import {
   ModalCloseButton,
   Input,
   Button,
-} from "../page";
+} from "../components/ui/SharedComponents";
 import { FaUpload } from "react-icons/fa";
 
 interface EditProfileModalProps {
@@ -144,7 +144,7 @@ export default function EditProfileModal({
           <Input
             id="usernameDisp"
             value={usernameForDisplay}
-            onChange={(e) => setUsernameForDisplay(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsernameForDisplay(e.target.value)}
           />
         </FormField>
 
@@ -153,7 +153,7 @@ export default function EditProfileModal({
           <Input
             id="profileName"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
           />
         </FormField>
         <FormField>
@@ -162,7 +162,7 @@ export default function EditProfileModal({
           <Input
             id="profileSurname"
             value={surname}
-            onChange={(e) => setSurname(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSurname(e.target.value)}
           />
         </FormField>
 
@@ -172,7 +172,7 @@ export default function EditProfileModal({
             id="profileDob"
             type="date"
             value={dob}
-            onChange={(e) => setDob(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDob(e.target.value)}
           />
         </FormField>
 

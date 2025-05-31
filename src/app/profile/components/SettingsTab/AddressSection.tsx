@@ -13,8 +13,8 @@ import {
   ModalContent,
   ModalCloseButton,
   Input,
-  Button, // Umumiy Buttonni ishlatamiz
-} from "../../page";
+  Button,
+} from "../../components/ui/SharedComponents";
 import ConfirmDeleteModal from "./modals/ConfirmDeleteModal";
 
 interface AddAddressModalProps {

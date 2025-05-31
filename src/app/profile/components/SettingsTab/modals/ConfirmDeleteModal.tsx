@@ -6,7 +6,7 @@ import {
   ModalContent,
   ModalCloseButton,
   Button,
-} from "../../../page"; // Umumiy page.tsx dan
+} from "../../../components/ui/SharedComponents"; // Shared styled components
 
 interface ConfirmDeleteModalProps {
   itemType: string; // "номер телефона", "email", "адрес"

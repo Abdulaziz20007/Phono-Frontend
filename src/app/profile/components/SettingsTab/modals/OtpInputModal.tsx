@@ -6,7 +6,7 @@ import {
   ModalContent,
   ModalCloseButton,
   Button,
-} from "../../../page";
+} from "../../../components/ui/SharedComponents";
 
 interface OtpInputModalProps {
   title: string;

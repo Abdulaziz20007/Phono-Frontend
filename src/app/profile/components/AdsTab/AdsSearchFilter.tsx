@@ -1,6 +1,6 @@
 // app/profile/components/AdsTab/AdsSearchFilter.tsx
 import styled from "styled-components";
-import { Input, Button } from "../../page"; // Umumiy komponentlar
+import { Input, Button } from "../../components/ui/SharedComponents"; // Shared components
 import { FaSearch, FaFilter } from "react-icons/fa";
 
 interface AdsSearchFilterProps {
