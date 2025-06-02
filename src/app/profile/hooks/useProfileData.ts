@@ -232,12 +232,20 @@ export const useProfileData = () => {
         if (!prevUser) return null;
         return {
           ...prevUser,
-          emails: [...prevUser.emails, newEmail],
+          emails: [
+            ...prevUser.emails,
+            {
+              id: newEmail.user_id,
+              user_id: newEmail.user_id,
+              email: newEmail.email,
+              is_active: newEmail.is_active,
+            },
+          ],
         };
       });
     } catch (err) {
-      console.error("Error adding email:", err);
-      setError(err instanceof Error ? err.message : "Failed to add email");
+      console.error("error adding email:", err);
+      setError(err instanceof Error ? err.message : "failed to add email");
     }
   }, []);
 
