@@ -7,6 +7,7 @@ import {
   FaPlus,
   FaChevronDown,
   FaChevronUp,
+  FaMapMarkerAlt,
 } from "react-icons/fa";
 import {
   ModalBackdrop,
@@ -16,11 +17,17 @@ import {
   Button,
 } from "../../components/ui/SharedComponents";
 import ConfirmDeleteModal from "./modals/ConfirmDeleteModal";
+import GoogleMapsSelector from "./GoogleMapsSelector";
 
 interface AddAddressModalProps {
   onClose: () => void;
-  // onSave faqat modal ichidan keladigan ma'lumotlarni qabul qilishi kerak
-  onSave: (addressData: { name: string; address: string }) => void;
+  // update onsave to include lat and long
+  onSave: (addressData: {
+    name: string;
+    address: string;
+    lat: string;
+    long: string;
+  }) => void;
 }
 
 // AddressSectionProps ichida onAdd tipi
@@ -136,21 +143,47 @@ const AddAddressStyledButton = styled.button`
     border-color: #ccc;
   }
 `;
+
+const LocationTag = styled.div`
+  display: inline-flex;
+  align-items: center;
+  background-color: #e8f4fd;
+  color: #0277bd;
+  font-size: 0.8em;
+  padding: 2px 6px;
+  border-radius: 3px;
+  margin-top: 5px;
+  gap: 3px;
+`;
 // --- End of Styled Components ---
 
-// AddAddressModal o'zgarishsiz (faqat Button $primary bo'lishi mumkin)
+// modified addressmodal to include googlempsselector
 const AddAddressModal: React.FC<AddAddressModalProps> = ({
   onClose,
   onSave,
 }) => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
+  const [lat, setLat] = useState("41.299496"); // default tashkent coordinates
+  const [lng, setLng] = useState("69.240073");
+
+  const handleLocationSelect = (latitude: string, longitude: string) => {
+    setLat(latitude);
+    setLng(longitude);
+  };
 
   const handleSubmit = () => {
-    if (name.trim() && address.trim()) {
-      onSave({ name, address });
+    if (name.trim() && address.trim() && lat && lng) {
+      onSave({
+        name,
+        address,
+        lat,
+        long: lng, // note: backend uses 'long' not 'lng'
+      });
     } else {
-      alert("Iltimos, barcha kerakli maydonlarni to'ldiring.");
+      alert(
+        "пожалуйста, заполните все поля и выберите местоположение на карте."
+      );
     }
   };
 
@@ -158,24 +191,52 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
     <ModalBackdrop onClick={onClose}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
         <ModalCloseButton onClick={onClose}>×</ModalCloseButton>
-        <h2>Добавить адрес</h2>
+        <h2>добавить адрес</h2>
         <Input
           type="text"
-          placeholder="Название (например, Дом, Офис)"
+          placeholder="название (например, дом, офис)"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          style={{ marginBottom: "10px" }}
         />
         <Input
           type="text"
-          placeholder="Адрес (улица, дом, квартира)"
+          placeholder="адрес (улица, дом, квартира)"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
+          style={{ marginBottom: "15px" }}
         />
-        <Button $primary onClick={handleSubmit}>
-          {" "}
-          {/* <<<--- $primary */}
-          Сохранить адрес
-        </Button>
+
+        <label
+          style={{
+            display: "block",
+            marginBottom: "10px",
+            fontWeight: "500",
+            color: "#444",
+          }}
+        >
+          выберите местоположение на карте
+        </label>
+
+        <GoogleMapsSelector
+          onLocationSelect={handleLocationSelect}
+          initialLat={lat}
+          initialLng={lng}
+        />
+
+        <div
+          style={{
+            marginTop: "20px",
+            display: "flex",
+            justifyContent: "flex-end",
+            gap: "10px",
+          }}
+        >
+          <Button onClick={onClose}>отмена</Button>
+          <Button $primary onClick={handleSubmit}>
+            сохранить адрес
+          </Button>
+        </div>
       </ModalContent>
     </ModalBackdrop>
   );
@@ -209,13 +270,18 @@ export default function AddressSection({
     setItemToDeleteName(addressObject.name); // yoki addressObject.address
   };
 
-  const handleModalSave = (modalData: { name: string; address: string }) => {
-    // Bu yerda modalData'ni onAdd kutayotgan formatga o'tkazamiz
-    // lat va long uchun default qiymatlar yoki boshqa logika qo'shilishi mumkin
+  const handleModalSave = (modalData: {
+    name: string;
+    address: string;
+    lat: string;
+    long: string;
+  }) => {
+    // pass all the data including lat and long to the onAdd function
     onAdd({
       name: modalData.name,
       address: modalData.address,
-      // lat va long ni ixtiyoriy qilib qo'yamiz, useProfileData da null bo'ladi
+      lat: modalData.lat,
+      long: modalData.long,
     });
     setShowAddModal(false);
   };
@@ -231,7 +297,7 @@ export default function AddressSection({
   return (
     <SectionCard>
       <SectionHeader onClick={() => setIsOpen(!isOpen)}>
-        <h3>Адрес</h3>
+        <h3>адрес</h3>
         {isOpen ? <FaChevronUp /> : <FaChevronDown />}
       </SectionHeader>
       <SectionContent $isOpen={isOpen}>
@@ -243,6 +309,11 @@ export default function AddressSection({
               <AddressDetails>
                 <strong>{addr.name}</strong>
                 <span>{addr.address}</span>
+                <LocationTag>
+                  <FaMapMarkerAlt size={10} /> координаты:{" "}
+                  {parseFloat(addr.lat).toFixed(4)},{" "}
+                  {parseFloat(addr.long).toFixed(4)}
+                </LocationTag>
               </AddressDetails>
               <AddressDeleteButton onClick={() => handleDeleteClick(addr)}>
                 {" "}
@@ -255,7 +326,7 @@ export default function AddressSection({
         <AddAddressStyledButton onClick={() => setShowAddModal(true)}>
           {" "}
           {/* <<<--- O'ZGARTIRILDI */}
-          <FaPlus /> Добавить адрес
+          <FaPlus /> добавить адрес
         </AddAddressStyledButton>
       </SectionContent>
 

@@ -1,0 +1,30 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# next.js application structure
+
+## hybrid architecture
+this project uses a hybrid approach with both app router and pages router:
+- app router: [src/app](mdc:src/app) for newer components
+- pages router: [src/pages](mdc:src/pages) for existing components
+
+## app router structure
+the app router follows next.js conventions:
+- [src/app/layout.tsx](mdc:src/app/layout.tsx) - root layout
+- [src/app/page.tsx](mdc:src/app/page.tsx) - home page
+- [src/app/globals.scss](mdc:src/app/globals.scss) - global styles
+- feature folders like `auth` and `profile` represent routes
+
+## pages router structure
+the pages router follows next.js pages convention:
+- [src/pages/_app.tsx](mdc:src/pages/_app.tsx) - custom app component
+- [src/pages/_document.tsx](mdc:src/pages/_document.tsx) - custom document
+- feature folders like `home` and `auth` contain page components
+
+## styling approach
+this project uses scss modules for styling. global styles are defined in [src/app/globals.scss](mdc:src/app/globals.scss).
+
+## navigation
+navigation between pages can use both app router's `usePathname()` and `Link` component, as well as traditional pages router navigation with `router.push()` and `Link`.

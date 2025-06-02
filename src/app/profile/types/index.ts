@@ -28,18 +28,18 @@ export interface UserAdditionalPhone {
 
 export interface UserRegisteredEmail {
   id: number;
-  email: string;
   user_id: number;
+  email: string;
   is_active: boolean;
 }
 
-// Siz bergan Prisma schemasiga mos
+// update to match prisma schema where lat and long are non-nullable strings
 export interface UserAddress {
   id: number;
   name: string; // UI'da "Дом", "Офис" uchun
   address: string;
-  lat?: string | null; // Prisma'da String, null bo'lishi mumkin
-  long?: string | null; // Prisma'da String, null bo'lishi mumkin
+  lat: string; // non-nullable string per prisma schema
+  long: string; // non-nullable string per prisma schema
   user_id: number;
 }
 

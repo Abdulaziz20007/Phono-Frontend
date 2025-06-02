@@ -1,7 +1,7 @@
 // app/profile/components/SettingsTab/AccountActionsSection.tsx
 import React, { useState } from "react";
 import styled from "styled-components";
-import { FaSignOutAlt, FaTrashAlt } from "react-icons/fa";
+import { FaSignOutAlt } from "react-icons/fa";
 import {
   ModalBackdrop,
   ModalContent,
@@ -12,7 +12,6 @@ import {
 
 interface AccountActionsSectionProps {
   onLogout: () => void;
-  onDeleteAccount: () => void;
 }
 
 // --- Confirm Action Modal (Logout va Delete Account uchun umumiy) ---
@@ -86,19 +85,12 @@ const ActionsContainer = styled.div`
 
 export default function AccountActionsSection({
   onLogout,
-  onDeleteAccount,
 }: AccountActionsSectionProps) {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
 
   const handleLogout = () => {
     onLogout();
     setShowLogoutModal(false);
-  };
-
-  const handleDelete = () => {
-    onDeleteAccount();
-    setShowDeleteAccountModal(false);
   };
 
   return (
@@ -108,9 +100,6 @@ export default function AccountActionsSection({
       <ActionButton onClick={() => setShowLogoutModal(true)}>
         <FaSignOutAlt /> Выйти с аккаунта
       </ActionButton>
-      <ActionButton $danger onClick={() => setShowDeleteAccountModal(true)}>
-        <FaTrashAlt /> Удалить учетную запись
-      </ActionButton>
       {showLogoutModal && (
         <ConfirmActionModal
           title="Выйти с аккаунта?"
@@ -118,16 +107,6 @@ export default function AccountActionsSection({
           confirmButtonText="Выйти"
           onClose={() => setShowLogoutModal(false)}
           onConfirm={handleLogout}
-        />
-      )}
-      {showDeleteAccountModal && (
-        <ConfirmActionModal
-          title="Удалить учетную запись?"
-          message="Вы действительно хотите удалить учетную запись? Это действие необратимо."
-          confirmButtonText="Удалить"
-          isDangerAction={true}
-          onClose={() => setShowDeleteAccountModal(false)}
-          onConfirm={handleDelete}
         />
       )}
     </ActionsContainer>

@@ -1,0 +1,73 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# code conventions
+
+## typescript
+- use typescript for all new code
+- define types for components, functions, and variables
+- avoid using `any` type
+- use type inference when possible
+- use interfaces for object shapes
+
+## component patterns
+- use functional components with hooks
+- use typescript generics for reusable components
+- add explicit return types to functions
+
+## file structure
+- one component per file
+- files should be named after the component they contain
+- keep files small and focused (< 300 lines as a guideline)
+
+## imports and exports
+- use named exports for utility functions
+- use default exports for components
+- organize imports by:
+  1. external dependencies
+  2. internal modules
+  3. component styles
+
+example:
+```typescript
+// external dependencies
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
+
+// internal modules
+import { formatDate } from '@/utils/formatters'
+import { useProducts } from '@/hooks/useProducts'
+
+// styles
+import styles from './component.module.scss'
+```
+
+## error handling
+- use try/catch blocks for error handling
+- log errors to console in development
+- use error boundaries for component errors
+
+## linting and formatting
+- follow eslint configuration
+- use prettier for code formatting
+- run linting before commits
+
+## comments and documentation
+- add jsdoc comments for functions and components
+- keep comments in lowercase
+- document complex logic
+- avoid redundant comments
+
+example:
+```typescript
+/**
+ * formats product data for display
+ * @param product raw product from api
+ * @returns formatted product for display
+ */
+const formatProductData = (product: RawProduct): FormattedProduct => {
+  // transformation logic
+}
+```

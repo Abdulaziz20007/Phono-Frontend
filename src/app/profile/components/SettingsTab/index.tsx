@@ -17,14 +17,14 @@ import { useProfileData } from "../../hooks/useProfileData"; // <<<--- IMPORT QI
 interface SettingsTabProps {
   user: UserProfile;
   onAddPhoneNumber: (newNumber: string) => void;
-  onDeletePhoneNumber: (phoneId: number) => void; // <<<--- string -> number
+  onDeletePhoneNumber: (phoneId: number) => void;
   onAddEmail: (newEmail: string) => void;
-  onDeleteEmail: (emailId: number) => void; // <<<--- string -> number
+  onDeleteEmail: (emailId: number) => void;
+  onEditEmail?: (emailId: number, newEmail: string) => void;
   onAddAddress: (newAddress: Omit<UserAddress, "id" | "user_id">) => void;
-  onDeleteAddress: (addressId: number) => void; // Bu allaqachon to'g'ri (number)
+  onDeleteAddress: (addressId: number) => void;
   onLanguageChange: (language: "ru" | "en" | "uz") => void;
   onLogout: () => void;
-  onDeleteAccount: () => void;
 }
 const SettingsContainer = styled.div`
   background-color: #fff;
@@ -39,11 +39,11 @@ export default function SettingsTab({
   onDeletePhoneNumber,
   onAddEmail,
   onDeleteEmail,
+  onEditEmail,
   onAddAddress,
   onDeleteAddress,
   onLanguageChange,
   onLogout,
-  onDeleteAccount,
 }: SettingsTabProps) {
   return (
     <SettingsContainer>
@@ -53,9 +53,10 @@ export default function SettingsTab({
         onDelete={onDeletePhoneNumber} // Hookdan olingan funksiya
       />
       <EmailSection
-        emails={user.emails} // Bu to'g'ri
+        emails={user.emails}
         onAdd={onAddEmail}
         onDelete={onDeleteEmail}
+        onEdit={onEditEmail}
       />
       <AddressSection
         addresses={user.addresses}
@@ -66,10 +67,7 @@ export default function SettingsTab({
         currentLanguage={user.appLanguage}
         onLanguageChange={onLanguageChange}
       />
-      <AccountActionsSection
-        onLogout={onLogout}
-        onDeleteAccount={onDeleteAccount}
-      />
+      <AccountActionsSection onLogout={onLogout} />
     </SettingsContainer>
   );
 }

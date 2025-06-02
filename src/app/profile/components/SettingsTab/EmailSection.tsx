@@ -2,7 +2,15 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { UserRegisteredEmail } from "../../types";
-import { FaTrash, FaPlus, FaChevronDown, FaChevronUp } from "react-icons/fa";
+import {
+  FaTrash,
+  FaPlus,
+  FaChevronDown,
+  FaChevronUp,
+  FaCheckCircle,
+  FaExclamationCircle,
+  FaEdit,
+} from "react-icons/fa";
 import {
   ModalBackdrop,
   ModalContent,
@@ -10,14 +18,13 @@ import {
   Input,
   Button,
 } from "../../components/ui/SharedComponents"; // Shared styled components
-import OtpInputModal from "./modals/OtpInputModal";
 import ConfirmDeleteModal from "./modals/ConfirmDeleteModal";
 
 interface EmailSectionProps {
-  // <<<--- PROP TIPINI BU YERDA ANIQLAYMIZ
   emails: UserRegisteredEmail[];
   onAdd: (newEmail: string) => void;
-  onDelete: (emailId: number) => void; // <<<--- string -> number
+  onDelete: (emailId: number) => void;
+  onEdit?: (emailId: number, newEmail: string) => void; // Add optional edit function
 }
 
 // --- Styled Components (Section uchun) ---
@@ -72,8 +79,20 @@ const DeleteButton = styled.button`
   color: #e53935; /* Qizil */
   cursor: pointer;
   font-size: 1.1em;
+  margin-left: 8px;
   &:hover {
     color: #c62828;
+  }
+`;
+
+const EditButton = styled.button`
+  background: none;
+  border: none;
+  color: #2196f3; /* Ko'k */
+  cursor: pointer;
+  font-size: 1.1em;
+  &:hover {
+    color: #1565c0;
   }
 `;
 
@@ -93,30 +112,68 @@ const AddButton = styled.button`
     text-decoration: underline;
   }
 `;
-// --- End of Styled Components ---
+
+const EmailInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const StatusIcon = styled.span`
+  color: ${(props) => props.color};
+  display: flex;
+  align-items: center;
+`;
+
+const StatusText = styled.span<{ $isActive: boolean }>`
+  font-size: 0.8em;
+  color: ${(props) => (props.$isActive ? "#4caf50" : "#ff9800")};
+  margin-left: 5px;
+`;
+
+const SuccessMessage = styled.div`
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  padding: 12px;
+  border-radius: 4px;
+  margin: 10px 0;
+  font-size: 0.9em;
+`;
 
 // --- Add Email Modal ---
 interface AddEmailModalProps {
   onClose: () => void;
-  onGetCode: (email: string) => void;
+  onAdd: (email: string) => void;
 }
 
-const AddEmailModal: React.FC<AddEmailModalProps> = ({
-  onClose,
-  onGetCode,
-}) => {
+const AddEmailModal: React.FC<AddEmailModalProps> = ({ onClose, onAdd }) => {
   const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
 
   const isValidEmail = (email: string) => {
     // Oddiy email validatsiyasi
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (isValidEmail(email)) {
-      onGetCode(email);
+      try {
+        await onAdd(email);
+        setMessage(
+          "verification link has been sent to your email. please check your inbox and verify your email."
+        );
+      } catch (error) {
+        setMessage(
+          error instanceof Error ? error.message : "failed to add email"
+        );
+      }
     } else {
-      alert("Iltimos, to'g'ri elektron pochta manzilini kiriting.");
+      setMessage("please enter a valid email address.");
     }
   };
 
@@ -131,43 +188,107 @@ const AddEmailModal: React.FC<AddEmailModalProps> = ({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+        {message && <SuccessMessage>{message}</SuccessMessage>}
         <Button $primary onClick={handleSubmit}>
-          Получить код
+          Добавить
         </Button>
       </ModalContent>
     </ModalBackdrop>
   );
 };
-// --- End of Add Email Modal ---
+
+// --- Edit Email Modal ---
+interface EditEmailModalProps {
+  email: UserRegisteredEmail;
+  onClose: () => void;
+  onEdit: (emailId: number, email: string) => void;
+}
+
+const EditEmailModal: React.FC<EditEmailModalProps> = ({
+  email,
+  onClose,
+  onEdit,
+}) => {
+  const [newEmail, setNewEmail] = useState(email.email);
+  const [message, setMessage] = useState("");
+
+  const isValidEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const handleSubmit = async () => {
+    if (isValidEmail(newEmail)) {
+      try {
+        await onEdit(email.id, newEmail);
+        setMessage(
+          "verification link has been sent to your new email. please check your inbox and verify your email."
+        );
+      } catch (error) {
+        setMessage(
+          error instanceof Error ? error.message : "failed to edit email"
+        );
+      }
+    } else {
+      setMessage("please enter a valid email address.");
+    }
+  };
+
+  return (
+    <ModalBackdrop onClick={onClose}>
+      <ModalContent onClick={(e) => e.stopPropagation()}>
+        <ModalCloseButton onClick={onClose}>×</ModalCloseButton>
+        <h2>Изменить почту</h2>
+        <Input
+          type="email"
+          placeholder="Введите новый E-mail"
+          value={newEmail}
+          onChange={(e) => setNewEmail(e.target.value)}
+        />
+        {message && <SuccessMessage>{message}</SuccessMessage>}
+        <Button $primary onClick={handleSubmit}>
+          Сохранить
+        </Button>
+      </ModalContent>
+    </ModalBackdrop>
+  );
+};
 
 export default function EmailSection({
   emails,
   onAdd,
   onDelete,
+  onEdit,
 }: EmailSectionProps) {
   const [isOpen, setIsOpen] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<UserRegisteredEmail | null>(
     null
   );
-  const [currentEmail, setCurrentEmail] = useState("");
+  const [itemToEdit, setItemToEdit] = useState<UserRegisteredEmail | null>(
+    null
+  );
 
   const handleAddEmailClick = () => {
     setShowAddModal(true);
   };
 
-  const handleGetCode = (emailValue: string) => {
-    setCurrentEmail(emailValue);
+  const handleAddEmail = async (email: string) => {
+    await onAdd(email);
     setShowAddModal(false);
-    setShowOtpModal(true);
   };
 
-  const handleOtpSubmit = (otp: string) => {
-    console.log("OTP Submitted:", otp, "for email:", currentEmail);
-    onAdd(currentEmail);
-    setShowOtpModal(false);
-    setCurrentEmail("");
+  const handleEditClick = (email: UserRegisteredEmail) => {
+    setItemToEdit(email);
+    setShowEditModal(true);
+  };
+
+  const handleEditEmail = async (emailId: number, newEmail: string) => {
+    if (onEdit) {
+      await onEdit(emailId, newEmail);
+      setShowEditModal(false);
+      setItemToEdit(null);
+    }
   };
 
   const handleDeleteClick = (email: UserRegisteredEmail) => {
@@ -190,11 +311,31 @@ export default function EmailSection({
       <SectionContent $isOpen={isOpen}>
         <ItemList>
           {emails.map((email) => (
-            <Item key={email.id}>
-              <span>{email.email}</span>
-              <DeleteButton onClick={() => handleDeleteClick(email)}>
-                <FaTrash />
-              </DeleteButton>
+            <Item key={email.email}>
+              <EmailInfo>
+                <span>{email.email}</span>
+                {email.is_active ? (
+                  <StatusIcon color="#4caf50">
+                    <FaCheckCircle />
+                    <StatusText $isActive={true}>активный</StatusText>
+                  </StatusIcon>
+                ) : (
+                  <StatusIcon color="#ff9800">
+                    <FaExclamationCircle />
+                    <StatusText $isActive={false}>неактивный</StatusText>
+                  </StatusIcon>
+                )}
+              </EmailInfo>
+              <ButtonGroup>
+                {onEdit && (
+                  <EditButton onClick={() => handleEditClick(email)}>
+                    <FaEdit />
+                  </EditButton>
+                )}
+                <DeleteButton onClick={() => handleDeleteClick(email)}>
+                  <FaTrash />
+                </DeleteButton>
+              </ButtonGroup>
             </Item>
           ))}
         </ItemList>
@@ -206,16 +347,17 @@ export default function EmailSection({
       {showAddModal && (
         <AddEmailModal
           onClose={() => setShowAddModal(false)}
-          onGetCode={handleGetCode}
+          onAdd={handleAddEmail}
         />
       )}
-      {showOtpModal && (
-        <OtpInputModal
-          title="Подтвердите почту"
-          description={`Мы отправили код на адрес ${currentEmail}`}
-          onClose={() => setShowOtpModal(false)}
-          onSubmit={handleOtpSubmit}
-          digits={6}
+      {showEditModal && itemToEdit && onEdit && (
+        <EditEmailModal
+          email={itemToEdit}
+          onClose={() => {
+            setShowEditModal(false);
+            setItemToEdit(null);
+          }}
+          onEdit={handleEditEmail}
         />
       )}
       {itemToDelete && (

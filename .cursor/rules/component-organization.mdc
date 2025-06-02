@@ -1,0 +1,55 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# component organization
+
+## component structure
+components in this project are organized by feature and functionality:
+
+### page components
+- app router pages are in the [src/app](mdc:src/app) directory and its subdirectories
+- pages router pages are in the [src/pages](mdc:src/pages) directory and its subdirectories
+
+### feature-specific components
+components that belong to specific features are organized in the following pattern:
+- `components` folder within feature directory
+- component categories may have their own subdirectories
+
+for example:
+- home page components: [src/pages/home/components](mdc:src/pages/home/components)
+- profile page components: [src/app/profile/components](mdc:src/app/profile/components)
+
+### naming conventions
+- component files use pascal case (e.g., `ProductCard.tsx`)
+- component directories use camel case for multi-word names
+- component interfaces are prefixed with 'I' (e.g., `IProductCardProps`)
+
+### component structure pattern
+components typically follow this structure:
+```tsx
+import { type FC } from 'react'
+
+interface IComponentProps {
+  // props definition
+}
+
+const Component: FC<IComponentProps> = ({ prop1, prop2 }) => {
+  // component logic
+  
+  return (
+    // jsx
+  )
+}
+
+export default Component
+```
+
+## state management
+- local component state: use react hooks (`useState`, `useReducer`)
+- global state: use context api in [src/context](mdc:src/context)
+
+## component tabs and modals
+- tabs are organized in their own directories (e.g., `adstab`, `favoritestab`)
+- modals are grouped in a `modals` subdirectory within the component directory

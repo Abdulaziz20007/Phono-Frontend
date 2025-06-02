@@ -16,7 +16,8 @@ import {
 const isBrowser = typeof window !== "undefined";
 
 // Use absolute URL to ensure direct client-side API calls
-const BASE_URL = "https://api.phono.ligma.uz";
+const BASE_URL = "http://localhost:3000";
+// const BASE_URL = "https://api.phono.ligma.uz";
 
 // Create an axios instance with default configuration
 const axiosInstance = axios.create({
@@ -216,7 +217,15 @@ export const api = {
       phone: string
     ): Promise<{ id: number; phone: string; user_id: number }> => {
       try {
-        const response = await axiosInstance.post("/user/phones", { phone });
+        // format phone number to remove +998 prefix
+        let formattedPhone = phone;
+        if (phone.startsWith("+998")) {
+          formattedPhone = phone.substring(4).replace(/\s/g, "");
+        }
+
+        const response = await axiosInstance.post("/phone", {
+          phone: formattedPhone,
+        });
         return response.data;
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
@@ -232,7 +241,7 @@ export const api = {
       phoneId: number
     ): Promise<{ success: boolean }> => {
       try {
-        const response = await axiosInstance.delete(`/user/phones/${phoneId}`);
+        const response = await axiosInstance.delete(`/phone/${phoneId}`);
         return response.data;
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
@@ -247,13 +256,12 @@ export const api = {
     addEmail: async (
       email: string
     ): Promise<{
-      id: number;
-      email: string;
       user_id: number;
+      email: string;
       is_active: boolean;
     }> => {
       try {
-        const response = await axiosInstance.post("/user/emails", { email });
+        const response = await axiosInstance.post("/email", { email });
         return response.data;
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
@@ -267,7 +275,31 @@ export const api = {
 
     deleteEmail: async (emailId: number): Promise<{ success: boolean }> => {
       try {
-        const response = await axiosInstance.delete(`/user/emails/${emailId}`);
+        const response = await axiosInstance.delete(`/email/${emailId}`);
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          throw new Error(
+            error.response.data.message || `API error: ${error.response.status}`
+          );
+        }
+        throw new Error("Network error occurred");
+      }
+    },
+
+    editEmail: async (
+      emailId: number,
+      newEmail: string
+    ): Promise<{
+      id: number;
+      user_id: number;
+      email: string;
+      is_active: boolean;
+    }> => {
+      try {
+        const response = await axiosInstance.patch(`/email/${emailId}`, {
+          email: newEmail,
+        });
         return response.data;
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
@@ -293,10 +325,7 @@ export const api = {
       user_id: number;
     }> => {
       try {
-        const response = await axiosInstance.post(
-          "/user/addresses",
-          addressData
-        );
+        const response = await axiosInstance.post("/address", addressData);
         return response.data;
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
@@ -310,9 +339,7 @@ export const api = {
 
     deleteAddress: async (addressId: number): Promise<{ success: boolean }> => {
       try {
-        const response = await axiosInstance.delete(
-          `/user/addresses/${addressId}`
-        );
+        const response = await axiosInstance.delete(`/address/${addressId}`);
         return response.data;
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {

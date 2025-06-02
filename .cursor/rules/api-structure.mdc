@@ -1,0 +1,51 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# api structure
+
+## overview
+the api integration is organized in the [src/api](mdc:src/api) directory. this structure follows a clean separation of concerns between api types and api calls.
+
+## api types
+all api-related types are defined in [src/api/types](mdc:src/api/types):
+- request payloads
+- response models
+- api endpoint definitions
+
+## making api calls
+the project uses a consistent pattern for api calls:
+- fetch api with appropriate wrappers
+- error handling with standardized error responses
+- data typing using the defined types
+
+## example api call pattern
+```typescript
+import type { ApiResponse, RequestData } from '../types'
+
+export const fetchData = async (params: RequestData): Promise<ApiResponse> => {
+  try {
+    const response = await fetch('/api/endpoint', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(params)
+    })
+    
+    if (!response.ok) {
+      throw new error(`api error: ${response.status}`)
+    }
+    
+    const data: ApiResponse = await response.json()
+    return data
+  } catch (error) {
+    console.error('error fetching data:', error)
+    throw error
+  }
+}
+```
+
+## authentication
+- auth-related api calls handle token management
+- authenticated requests include authorization headers
+- tokens are stored in secure storage (httponly cookies or localStorage based on security requirements)

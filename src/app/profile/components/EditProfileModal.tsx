@@ -144,7 +144,9 @@ export default function EditProfileModal({
           <Input
             id="usernameDisp"
             value={usernameForDisplay}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsernameForDisplay(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setUsernameForDisplay(e.target.value)
+            }
           />
         </FormField>
 
@@ -153,7 +155,9 @@ export default function EditProfileModal({
           <Input
             id="profileName"
             value={name}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setName(e.target.value)
+            }
           />
         </FormField>
         <FormField>
@@ -162,7 +166,9 @@ export default function EditProfileModal({
           <Input
             id="profileSurname"
             value={surname}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSurname(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setSurname(e.target.value)
+            }
           />
         </FormField>
 
@@ -172,7 +178,9 @@ export default function EditProfileModal({
             id="profileDob"
             type="date"
             value={dob}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDob(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setDob(e.target.value)
+            }
           />
         </FormField>
 

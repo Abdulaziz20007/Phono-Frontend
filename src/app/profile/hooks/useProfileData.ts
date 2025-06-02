@@ -259,6 +259,26 @@ export const useProfileData = () => {
     }
   }, []);
 
+  // Edit email
+  const editEmail = useCallback(async (emailId: number, newEmail: string) => {
+    try {
+      const updatedEmail = await api.user.editEmail(emailId, newEmail);
+
+      setUser((prevUser) => {
+        if (!prevUser) return null;
+        return {
+          ...prevUser,
+          emails: prevUser.emails.map((e) =>
+            e.id === emailId ? updatedEmail : e
+          ),
+        };
+      });
+    } catch (err) {
+      console.error("Error editing email:", err);
+      setError(err instanceof Error ? err.message : "Failed to edit email");
+    }
+  }, []);
+
   // Add address
   const addAddress = useCallback(
     async (addressData: Omit<UserAddress, "id" | "user_id">) => {
@@ -267,17 +287,27 @@ export const useProfileData = () => {
         const apiAddressData = {
           name: addressData.name,
           address: addressData.address,
-          lat: addressData.lat === null ? undefined : addressData.lat,
-          long: addressData.long === null ? undefined : addressData.long
+          lat: addressData.lat || "0", // provide default value if missing
+          long: addressData.long || "0", // provide default value if missing
         };
-        
+
         const newAddress = await api.user.addAddress(apiAddressData);
+
+        // Ensure the new address conforms to UserAddress type
+        const typedNewAddress: UserAddress = {
+          id: newAddress.id,
+          name: newAddress.name,
+          address: newAddress.address,
+          lat: newAddress.lat || "0", // ensure non-null string
+          long: newAddress.long || "0", // ensure non-null string
+          user_id: newAddress.user_id,
+        };
 
         setUser((prevUser) => {
           if (!prevUser) return null;
           return {
             ...prevUser,
-            addresses: [...prevUser.addresses, newAddress],
+            addresses: [...prevUser.addresses, typedNewAddress],
           };
         });
       } catch (err) {
@@ -341,21 +371,6 @@ export const useProfileData = () => {
     }
   }, []);
 
-  // Delete user account
-  const deleteUserAccount = useCallback(async () => {
-    try {
-      await api.user.deleteAccount();
-      // Clear local storage and redirect to login page
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("accessToken");
-        window.location.href = "/auth";
-      }
-    } catch (err) {
-      console.error("Error deleting account:", err);
-      setError(err instanceof Error ? err.message : "Failed to delete account");
-    }
-  }, []);
-
   return {
     user,
     ads,
@@ -369,11 +384,11 @@ export const useProfileData = () => {
     deletePhoneNumber,
     addEmail,
     deleteEmail,
+    editEmail,
     addAddress,
     deleteAddress,
     changeLanguage,
     logoutUser,
-    deleteUserAccount,
     refreshProfile: fetchUserProfile,
     refreshAds,
   };

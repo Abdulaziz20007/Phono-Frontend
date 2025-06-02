@@ -1,0 +1,28 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# project overview
+
+## introduction
+this is a next.js-based frontend application for phono - an e-commerce platform. the project follows a modern react architecture using next.js app router and pages router (hybrid approach).
+
+## main entry points
+- the main app entry is [src/app/page.tsx](mdc:src/app/page.tsx)
+- the pages router entry is [src/pages/_app.tsx](mdc:src/pages/_app.tsx)
+
+## key configuration files
+- [next.config.js](mdc:next.config.js) - next.js configuration
+- [tsconfig.json](mdc:tsconfig.json) - typescript configuration
+- [postcss.config.mjs](mdc:postcss.config.mjs) - postcss configuration
+
+## primary folders
+- `src/app` - contains app router components and layouts
+- `src/pages` - contains pages router components
+- `src/context` - contains react context providers
+- `src/utils` - contains utility functions
+- `src/api` - contains api related code and types
+- `public` - contains static assets
+
+refer to other rules for more detailed information about specific aspects of the project.

@@ -65,6 +65,18 @@
             text-decoration: underline;
           }
         }
+
+        &.active {
+          opacity: 1;
+          .user-name {
+            text-decoration: underline;
+            font-weight: 600;
+          }
+          .user-avatar-placeholder,
+          .user-avatar {
+            border: 2px solid white;
+          }
+        }
       }
 
       .user-avatar {

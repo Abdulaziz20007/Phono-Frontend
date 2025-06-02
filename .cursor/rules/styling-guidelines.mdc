@@ -1,0 +1,69 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# styling guidelines
+
+## css approach
+this project uses scss modules for component styling with the following conventions:
+
+- global styles in [src/app/globals.scss](mdc:src/app/globals.scss)
+- component-specific styles in `.module.scss` files
+- scss modules for style encapsulation
+
+## class naming conventions
+- kebab-case for class names (e.g., `product-card`)
+- bem-inspired naming: `block__element--modifier` pattern
+- example: `card__image--featured`
+
+## responsive design
+- mobile-first approach
+- use of media queries for responsiveness
+- common breakpoints:
+  ```scss
+  // mobile (default)
+  // tablet
+  @media (min-width: 768px) { /* styles */ }
+  // desktop
+  @media (min-width: 1024px) { /* styles */ }
+  // large screens
+  @media (min-width: 1440px) { /* styles */ }
+  ```
+
+## theme and variables
+- design tokens are defined as scss variables
+- common variables include:
+  ```scss
+  // colors
+  $primary-color: #007bff;
+  $secondary-color: #6c757d;
+  $accent-color: #ff5722;
+  
+  // spacing
+  $spacing-xs: 0.25rem;
+  $spacing-sm: 0.5rem;
+  $spacing-md: 1rem;
+  $spacing-lg: 1.5rem;
+  $spacing-xl: 2rem;
+  
+  // typography
+  $font-family-base: 'poppins', sans-serif;
+  $font-size-base: 1rem;
+  ```
+
+## importing styles
+```tsx
+import styles from './component.module.scss'
+
+const Component = () => {
+  return <div className={styles.container}>content</div>
+}
+```
+
+## utility classes
+use utility classes for common styling needs:
+- `.flex` - display: flex
+- `.grid` - display: grid
+- `.hidden` - display: none
+- `.text-center` - text-align: center

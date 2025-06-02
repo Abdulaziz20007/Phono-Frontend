@@ -10,7 +10,6 @@ import {
   Input,
   Button,
 } from "../../components/ui/SharedComponents"; // Shared styled components
-import OtpInputModal from "./modals/OtpInputModal";
 import ConfirmDeleteModal from "./modals/ConfirmDeleteModal";
 
 // --- Styled Components (Section uchun) ---
@@ -91,7 +90,7 @@ const AddButton = styled.button`
 // --- Add Phone Number Modal ---
 interface AddPhoneNumberModalProps {
   onClose: () => void;
-  onGetCode: (phoneNumber: string) => void;
+  onAdd: (phoneNumber: string) => void;
 }
 
 interface PhoneNumberSectionProps {
@@ -102,18 +101,20 @@ interface PhoneNumberSectionProps {
 }
 const AddPhoneNumberModal: React.FC<AddPhoneNumberModalProps> = ({
   onClose,
-  onGetCode,
+  onAdd,
 }) => {
   const [number, setNumber] = useState("+998 "); // Default prefix
 
   const handleSubmit = () => {
-    // Oddiy validatsiya (masalan, O'zbekiston raqami uchun 12 ta belgi +998 XX XXX XX XX)
-    const cleanedNumber = number.replace(/\s/g, ""); // Bo'shliqlarni olib tashlash
+    // validate phone number format for uzbekistan numbers
+    const cleanedNumber = number.replace(/\s/g, ""); // remove spaces
     if (cleanedNumber.length === 13 && cleanedNumber.startsWith("+998")) {
-      onGetCode(number); // Asl formatda yuborish (bo'shliqlar bilan)
+      // phone number is valid
+      onAdd(number);
+      onClose();
     } else {
       alert(
-        "Iltimos, to'g'ri O'zbekiston telefon raqamini kiriting (masalan, +998 90 123 45 67)."
+        "iltimos, to'g'ri o'zbekiston telefon raqamini kiriting (masalan, +998 90 123 45 67)."
       );
     }
   };
@@ -131,7 +132,7 @@ const AddPhoneNumberModal: React.FC<AddPhoneNumberModalProps> = ({
           maxLength={17} // "+998 XX XXX XX XX" uchun (1 + 3 + 2 + 3 + 2 + 2 + 4 bo'shliq)
         />
         <Button $primary onClick={handleSubmit}>
-          Получить код
+          Добавить
         </Button>
       </ModalContent>
     </ModalBackdrop>
@@ -146,27 +147,16 @@ export default function PhoneNumberSection({
 }: PhoneNumberSectionProps) {
   const [isOpen, setIsOpen] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [showOtpModal, setShowOtpModal] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<UserAdditionalPhone | null>(
     null
   );
-  const [currentPhoneNumber, setCurrentPhoneNumber] = useState("");
 
   const handleAddNumberClick = () => {
     setShowAddModal(true);
   };
 
-  const handleGetCode = (number: string) => {
-    setCurrentPhoneNumber(number);
-    setShowAddModal(false);
-    setShowOtpModal(true);
-  };
-
-  const handleOtpSubmit = (otp: string) => {
-    console.log("OTP Submitted:", otp, "for number:", currentPhoneNumber);
-    onAdd(currentPhoneNumber);
-    setShowOtpModal(false);
-    setCurrentPhoneNumber("");
+  const handleAddNumber = (number: string) => {
+    onAdd(number);
   };
 
   const handleDeleteClick = (phone: UserAdditionalPhone) => {
@@ -205,16 +195,7 @@ export default function PhoneNumberSection({
       {showAddModal && (
         <AddPhoneNumberModal
           onClose={() => setShowAddModal(false)}
-          onGetCode={handleGetCode}
-        />
-      )}
-      {showOtpModal && (
-        <OtpInputModal
-          title="Подтвердите номер"
-          description={`Мы отправили код на номер ${currentPhoneNumber}`}
-          onClose={() => setShowOtpModal(false)}
-          onSubmit={handleOtpSubmit}
-          digits={6}
+          onAdd={handleAddNumber}
         />
       )}
       {itemToDelete && (

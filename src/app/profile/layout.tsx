@@ -1,0 +1,18 @@
+import { ReactNode } from "react";
+import Script from "next/script";
+import Header from "../../pages/Home/Components/Header/Header";
+import "../../pages/Home/Components/Header/Header.scss";
+
+export default function ProfileLayout({ children }: { children: ReactNode }) {
+  return (
+    <>
+      {/* load the google maps api in the document head with next/script */}
+      <Script
+        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
+        strategy="beforeInteractive"
+      />
+      <Header />
+      {children}
+    </>
+  );
+}

@@ -1,7 +1,7 @@
 // app/profile/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useProfileData } from "./hooks/useProfileData";
 import UserInfo from "./components/UserInfo";
 import ProfileTabs from "./components/ProfileTabs";
@@ -10,7 +10,7 @@ import MessagesTab from "./components/MessagesTab";
 import FavoritesTab from "./components/FavoritesTab";
 import SettingsTab from "./components/SettingsTab";
 import EditProfileModal from "./components/EditProfileModal";
-import { UserProfile } from "./types";
+import { UserProfile, ActiveProfileTab } from "./types";
 
 // Import styled components from the shared file
 import {
@@ -20,13 +20,12 @@ import {
   LoadingContainer,
   LoadingSpinner,
   ErrorContainer,
-  RetryButton
+  RetryButton,
 } from "./components/ui/SharedComponents";
 
 // Placeholder Icons
 import {
   FaUserEdit,
-  FaTrash,
   FaPlus,
   FaGlobe,
   FaSignOutAlt,
@@ -42,24 +41,15 @@ import {
 
 // Modal components are now imported from SharedComponents
 
-
-
-
-
-
-
-
-
 // Loading components are now imported from SharedComponents
-
-
-
-
-
 
 // --- End of Styled Components ---
 
 export default function ProfilePage() {
+  // Local state for tab to ensure immediate updates
+  const [localActiveTab, setLocalActiveTab] = useState<ActiveProfileTab>("ads");
+  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
+
   const {
     user,
     ads,
@@ -73,16 +63,39 @@ export default function ProfilePage() {
     deletePhoneNumber,
     addEmail,
     deleteEmail,
+    editEmail,
     addAddress,
     deleteAddress,
     changeLanguage,
     logoutUser,
-    deleteUserAccount,
     refreshProfile,
     refreshAds,
   } = useProfileData();
 
-  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
+  // Check for active tab in sessionStorage and set it
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedTab = sessionStorage.getItem(
+        "profileActiveTab"
+      ) as ActiveProfileTab | null;
+      if (storedTab) {
+        // Update both the local state and the hook state
+        setLocalActiveTab(storedTab);
+        setActiveTab(storedTab);
+        // Clear it after using
+        sessionStorage.removeItem("profileActiveTab");
+      } else if (activeTab) {
+        // Sync local state with hook state
+        setLocalActiveTab(activeTab);
+      }
+    }
+  }, [activeTab, setActiveTab]);
+
+  // Handle tab changes
+  const handleTabChange = (tab: ActiveProfileTab) => {
+    setLocalActiveTab(tab); // Update local state immediately
+    setActiveTab(tab); // Update hook state
+  };
 
   // Handling loading state
   if (isLoading && !user) {
@@ -128,7 +141,7 @@ export default function ProfilePage() {
   }
 
   const renderTabContent = () => {
-    switch (activeTab) {
+    switch (localActiveTab) {
       case "ads":
         return (
           <>
@@ -192,11 +205,11 @@ export default function ProfilePage() {
             onDeletePhoneNumber={deletePhoneNumber}
             onAddEmail={addEmail}
             onDeleteEmail={deleteEmail}
+            onEditEmail={editEmail}
             onAddAddress={addAddress}
             onDeleteAddress={deleteAddress}
             onLanguageChange={changeLanguage}
             onLogout={logoutUser}
-            onDeleteAccount={deleteUserAccount}
           />
         );
       default:
@@ -223,7 +236,7 @@ export default function ProfilePage() {
         onEditClick={() => setIsEditProfileModalOpen(true)}
       />
 
-      <ProfileTabs activeTab={activeTab} onTabClick={setActiveTab} />
+      <ProfileTabs activeTab={localActiveTab} onTabClick={handleTabChange} />
 
       {renderTabContent()}
 

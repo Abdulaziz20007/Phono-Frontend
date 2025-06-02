@@ -1,6 +1,10 @@
-// next.config.js
-module.exports = {
+/** @type {import('next').NextConfig} */
+
+const nextConfig = {
   // ...other config...
+  env: {
+    NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY,
+  },
   images: {
     domains: [
       "chelak.s3.eu-central-1.amazonaws.com",
@@ -8,3 +12,5 @@ module.exports = {
     ],
   },
 };
+
+module.exports = nextConfig;
