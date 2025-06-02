@@ -35,13 +35,23 @@ phono-frontend/
 │   ├── pages/
 │   │   ├── auth/
 │   │   ├── home/
-│   │   │   └── components/
-│   │   │       ├── card/
-│   │   │       ├── categories/
-│   │   │       ├── footer/
-│   │   │       ├── header/  # Header component used in profile layout
-│   │   │       ├── productlisting/
-│   │   │       └── search/
+│   │   │   ├── Components/
+│   │   │   │   ├── Card/
+│   │   │   │   ├── Categories/
+│   │   │   │   ├── FilterModal/            # filter modal component integrated with search
+│   │   │   │   │   ├── components/
+│   │   │   │   │   │   └── ColorPicker/    # color picker component for filter modal
+│   │   │   │   │   ├── constants.ts        # contains mock data for filters
+│   │   │   │   │   ├── FilterModal.style.ts # styled components for filter modal
+│   │   │   │   │   ├── index.tsx           # main filter modal component
+│   │   │   │   │   └── types.ts            # types for filter modal
+│   │   │   │   ├── Footer/
+│   │   │   │   ├── Header/                 # Header component used in profile layout
+│   │   │   │   ├── ProductListing/
+│   │   │   │   └── Search/
+│   │   │   │       ├── Search.scss
+│   │   │   │       └── Search.tsx          # updated to integrate filter modal
+│   │   │   └── Home.tsx                    # main home page component
 │   │   ├── _app.tsx
 │   │   └── _document.tsx
 │   └── utils/

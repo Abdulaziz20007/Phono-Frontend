@@ -2,9 +2,12 @@
 
 import React, { useState } from "react";
 import "./Search.scss";
+import FilterModal from "../../Components/FilterModal";
+import { FilterState } from "../../Components/FilterModal/types";
 
 function Search() {
   const [searchText, setSearchText] = useState("");
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
@@ -13,7 +16,20 @@ function Search() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle search submit logic here
-    console.log("Searching for:", searchText);
+    console.log("searching for:", searchText);
+  };
+
+  const handleFilterClick = () => {
+    setIsFilterModalOpen(true);
+  };
+
+  const handleCloseFilterModal = () => {
+    setIsFilterModalOpen(false);
+  };
+
+  const handleApplyFilters = (filters: FilterState) => {
+    console.log("applied filters:", filters);
+    // here you would typically update your search results based on filters
   };
 
   return (
@@ -27,7 +43,11 @@ function Search() {
             onChange={handleSearchChange}
             className="search-input"
           />
-          <button type="button" className="filter-button">
+          <button
+            type="button"
+            className="filter-button"
+            onClick={handleFilterClick}
+          >
             <svg
               width="16"
               height="16"
@@ -49,6 +69,12 @@ function Search() {
           Поиск
         </button>
       </form>
+
+      <FilterModal
+        isOpen={isFilterModalOpen}
+        onClose={handleCloseFilterModal}
+        onApplyFilters={handleApplyFilters}
+      />
     </div>
   );
 }
