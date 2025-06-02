@@ -16,8 +16,8 @@ import {
 const isBrowser = typeof window !== "undefined";
 
 // Use absolute URL to ensure direct client-side API calls
-const BASE_URL = "http://localhost:3000";
-// const BASE_URL = "https://api.phono.ligma.uz";
+// const BASE_URL = "http://localhost:3000";
+const BASE_URL = "https://api.phono.ligma.uz";
 
 // Create an axios instance with default configuration
 const axiosInstance = axios.create({
