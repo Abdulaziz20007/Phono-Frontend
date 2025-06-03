@@ -199,9 +199,47 @@ export const api = {
       productId: number
     ): Promise<{ success: boolean }> => {
       try {
-        const response = await axiosInstance.post(
-          `/user/favorites/toggle/${productId}`
+        const response = await axiosInstance.delete(
+          `/favourite-item/user/product/${productId}`
         );
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          throw new Error(
+            error.response.data.message || `API error: ${error.response.status}`
+          );
+        }
+        throw new Error("Network error occurred");
+      }
+    },
+
+    addToFavorites: async (
+      productId: number
+    ): Promise<{ success: boolean }> => {
+      try {
+        const response = await axiosInstance.post(`/favourite-item`, {
+          product_id: productId,
+        });
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          // If product is already in favorites, return success
+          if (
+            error.response.data.message === "Mahsulot allaqachon sevimlilarda"
+          ) {
+            return { success: true };
+          }
+          throw new Error(
+            error.response.data.message || `API error: ${error.response.status}`
+          );
+        }
+        throw new Error("Network error occurred");
+      }
+    },
+
+    getFavouriteItems: async (): Promise<Product[]> => {
+      try {
+        const response = await axiosInstance.get("/user/favouriteItem");
         return response.data;
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
@@ -388,36 +426,6 @@ export const api = {
     getData: async (): Promise<HomepageData> => {
       try {
         const response = await axiosInstance.get("/web");
-        return response.data;
-      } catch (error) {
-        if (axios.isAxiosError(error) && error.response) {
-          throw new Error(
-            error.response.data.message || `API error: ${error.response.status}`
-          );
-        }
-        throw new Error("Network error occurred");
-      }
-    },
-  },
-
-  product: {
-    getById: async (productId: string | number): Promise<Product> => {
-      try {
-        const response = await axiosInstance.get(`/product/${productId}`);
-        return response.data;
-      } catch (error) {
-        if (axios.isAxiosError(error) && error.response) {
-          throw new Error(
-            error.response.data.message || `API error: ${error.response.status}`
-          );
-        }
-        throw new Error("Network error occurred");
-      }
-    },
-
-    getAll: async (limit: number = 10): Promise<Product[]> => {
-      try {
-        const response = await axiosInstance.get(`/products?limit=${limit}`);
         return response.data;
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
