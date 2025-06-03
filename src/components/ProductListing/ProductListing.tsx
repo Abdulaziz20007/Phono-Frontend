@@ -1,7 +1,7 @@
 import React from "react";
 import ProductCard from "../Card/ProductCard";
 import "./ProductListing.scss";
-import { Product, Brand } from "../../../../api/types";
+import { Product, Brand } from "../../api/types";
 
 interface ProductCardProps {
   id: number;

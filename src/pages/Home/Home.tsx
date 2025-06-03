@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Header from "./Components/Header/Header";
-import Search from "./Components/Search/Search";
-import Categories from "./Components/Categories/Categories";
-import ProductListing from "./Components/ProductListing/ProductListing";
-import Footer from "./Components/Footer/Footer";
 import { api } from "../../api/api";
 import { Product, Brand } from "../../api/types";
 import "./Home.scss";
+import Header from "../../components/Header/Header";
+import Footer from "../../components/Footer/Footer";
+import Categories from "../../components/Categories/Categories";
+import Search from "../../components/Search/Search";
+import ProductListing from "../../components/ProductListing/ProductListing";
 
 function Home() {
   const [products, setProducts] = useState<Product[]>([]);

@@ -81,6 +81,21 @@ export interface ProductUser {
   currency_id: number;
   is_active: boolean;
   refresh_token: string | null;
+  addresses?: {
+    id: number;
+    address: string;
+    lat?: string;
+    long?: string;
+  }[];
+  products?: {
+    id: number;
+    title: string;
+    images?: { id: number; url: string }[];
+  }[];
+  additional_phones?: {
+    id: number;
+    phone: string;
+  }[];
 }
 
 export interface Product {

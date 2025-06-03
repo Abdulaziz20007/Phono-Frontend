@@ -2,8 +2,8 @@
 
 import React, { useState } from "react";
 import "./Header.scss";
-import { useUser } from "../../../../context/UserContext";
 import Link from "next/link";
+import { useUser } from "../../context/UserContext";
 
 function Header() {
   const { user, isAuthenticated, logout } = useUser();

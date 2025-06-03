@@ -10,6 +10,12 @@ phono-frontend/
 │   │   └── api.ts          # updated email endpoints: /email for add, /email/:id for delete, /email/:id for edit
 │   ├── app/
 │   │   ├── auth/
+│   │   ├── product/
+│   │   │   ├── [id]/
+│   │   │   │   ├── page.tsx            # product detail page component with API integration
+│   │   │   │   └── page.module.scss    # product detail page styles with seller section
+│   │   │   ├── layout.tsx              # product section layout
+│   │   │   └── layout.module.scss      # product section layout styles
 │   │   ├── profile/
 │   │   │   ├── components/
 │   │   │   │   ├── adstab/
@@ -31,27 +37,29 @@ phono-frontend/
 │   │   ├── globals.scss
 │   │   ├── layout.tsx
 │   │   └── page.tsx
+│   ├── components/        # moved from src/pages/Home/Components
+│   │   ├── Card/
+│   │   │   ├── ProductCard.scss
+│   │   │   └── ProductCard.tsx        # updated to use Next.js Link for navigation to product/:id
+│   │   ├── Categories/
+│   │   ├── FilterModal/
+│   │   │   ├── components/
+│   │   │   │   └── ColorPicker/
+│   │   │   ├── constants.ts
+│   │   │   ├── FilterModal.style.ts
+│   │   │   ├── index.tsx
+│   │   │   └── types.ts
+│   │   ├── Footer/
+│   │   ├── Header/
+│   │   ├── ProductListing/
+│   │   └── Search/
+│   │       ├── Search.scss
+│   │       └── Search.tsx
 │   ├── context/
 │   ├── pages/
 │   │   ├── auth/
 │   │   ├── home/
-│   │   │   ├── Components/
-│   │   │   │   ├── Card/
-│   │   │   │   ├── Categories/
-│   │   │   │   ├── FilterModal/            # filter modal component integrated with search
-│   │   │   │   │   ├── components/
-│   │   │   │   │   │   └── ColorPicker/    # color picker component for filter modal
-│   │   │   │   │   ├── constants.ts        # contains mock data for filters
-│   │   │   │   │   ├── FilterModal.style.ts # styled components for filter modal
-│   │   │   │   │   ├── index.tsx           # main filter modal component
-│   │   │   │   │   └── types.ts            # types for filter modal
-│   │   │   │   ├── Footer/
-│   │   │   │   ├── Header/                 # Header component used in profile layout
-│   │   │   │   ├── ProductListing/
-│   │   │   │   └── Search/
-│   │   │   │       ├── Search.scss
-│   │   │   │       └── Search.tsx          # updated to integrate filter modal
-│   │   │   └── Home.tsx                    # main home page component
+│   │   │   └── Home.tsx            # main home page component
 │   │   ├── _app.tsx
 │   │   └── _document.tsx
 │   └── utils/

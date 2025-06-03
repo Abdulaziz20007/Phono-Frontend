@@ -2,8 +2,8 @@
 
 import React, { useState } from "react";
 import "./Search.scss";
-import FilterModal from "../../Components/FilterModal";
-import { FilterState } from "../../Components/FilterModal/types";
+import FilterModal from "../FilterModal";
+import { FilterState } from "../FilterModal/types";
 
 function Search() {
   const [searchText, setSearchText] = useState("");

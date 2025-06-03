@@ -399,6 +399,36 @@ export const api = {
       }
     },
   },
+
+  product: {
+    getById: async (productId: string | number): Promise<Product> => {
+      try {
+        const response = await axiosInstance.get(`/product/${productId}`);
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          throw new Error(
+            error.response.data.message || `API error: ${error.response.status}`
+          );
+        }
+        throw new Error("Network error occurred");
+      }
+    },
+
+    getAll: async (limit: number = 10): Promise<Product[]> => {
+      try {
+        const response = await axiosInstance.get(`/products?limit=${limit}`);
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          throw new Error(
+            error.response.data.message || `API error: ${error.response.status}`
+          );
+        }
+        throw new Error("Network error occurred");
+      }
+    },
+  },
 };
 
 // Re-export types for convenience

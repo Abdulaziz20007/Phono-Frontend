@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import Script from "next/script";
-import Header from "../../pages/Home/Components/Header/Header";
-import "../../pages/Home/Components/Header/Header.scss";
+import Header from "../../components/Header/Header";
+import "../../components/Header/Header.scss";
 
 export default function ProfileLayout({ children }: { children: ReactNode }) {
   return (
