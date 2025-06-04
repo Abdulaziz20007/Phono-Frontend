@@ -11,6 +11,12 @@ const nextConfig = {
       // add any other domains you need
     ],
   },
+  // Configure page extensions to prevent conflicts between app/ and pages/
+  pageExtensions: ["page.tsx", "page.ts", "page.jsx", "page.js"],
+  // Explicitly handle app directory usage
+  experimental: {
+    appDir: true,
+  },
 };
 
 module.exports = nextConfig;

@@ -1,5 +1,5 @@
 import React from "react";
-import { Brand } from "../../../../api/types";
+import { Brand } from "../../api/types";
 import "./Categories.scss";
 
 interface CategoriesProps {

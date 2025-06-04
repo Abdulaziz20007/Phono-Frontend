@@ -1,7 +1,7 @@
 import React from "react";
 import ProductCard from "../Card/ProductCard";
 import "./ProductListing.scss";
-import { Product, Brand } from "../../../../api/types";
+import { Product, Brand } from "../../../../../api/types";
 
 interface ProductCardProps {
   id: number;
@@ -67,7 +67,6 @@ function ProductListing({ products = [], brands = [] }: ProductListingProps) {
             condition={product.is_new ? "Новый" : "Б/у"}
             price={formatPrice(product.price)}
             isNew={product.is_new}
-            isFavorite={product.is_favourite}
           />
         ))}
       </div>
