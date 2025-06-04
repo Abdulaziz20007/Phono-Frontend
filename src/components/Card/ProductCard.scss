@@ -41,9 +41,23 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: opacity 0.2s;
 
       &:hover svg path {
         fill: #f44336;
+      }
+
+      &.active svg path {
+        fill: #f44336;
+      }
+
+      &.loading {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      &:disabled {
+        cursor: not-allowed;
       }
     }
   }

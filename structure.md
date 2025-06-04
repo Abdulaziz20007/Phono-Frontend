@@ -7,61 +7,55 @@ phono-frontend/
 ├── src/
 │   ├── api/
 │   │   └── types/
-│   │   └── api.ts          # updated email endpoints: /email for add, /email/:id for delete, /email/:id for edit
+│   │   │   └── index.ts          # includes Comment interface for product comments
+│   │   └── api.ts                # includes comment API functions but product responses already contain comments
 │   ├── app/
 │   │   ├── auth/
 │   │   ├── product/
 │   │   │   ├── [id]/
-│   │   │   │   ├── page.tsx            # product detail page component with API integration
-│   │   │   │   └── page.module.scss    # product detail page styles with seller section
+│   │   │   │   ├── page.tsx            # product detail page with comments section that uses product.comments
+│   │   │   │   └── page.module.scss    # product detail page styles with comment section styles
 │   │   │   ├── layout.tsx              # product section layout
 │   │   │   └── layout.module.scss      # product section layout styles
 │   │   ├── profile/
 │   │   │   ├── components/
 │   │   │   │   ├── adstab/
+│   │   │   │   │   ├── index.tsx       # ads tab component with active/waiting/deactive product sections
+│   │   │   │   │   ├── adcard.tsx      # updated card component showing product status
+│   │   │   │   │   └── adssearchfilter.tsx
 │   │   │   │   ├── favoritestab/
+│   │   │   │   │   └── index.tsx       # favorites tab component that displays favorite products from the API
 │   │   │   │   ├── messagestab/
-│   │   │   │   ├── settingstab/
-│   │   │   │   │   └── EmailSection.tsx    # updated to handle email verification via link and email editing
-│   │   │   │   │   └── index.tsx           # updated to pass editEmail function
-│   │   │   │   │   └── modals/
-│   │   │   │   └── ui/
+│   │   │   │   └── settingstab/
+│   │   │   │       ├── modals/
+│   │   │   │       └── ui/
 │   │   │   ├── hooks/
-│   │   │   │   └── useProfileData.ts       # updated to handle email operations with proper id fields and added editEmail function
-│   │   │   └── types/
-│   │   │   │   └── index.ts                # updated UserRegisteredEmail to include id field
-│   │   │   ├── layout.tsx  # now includes Header component
-│   │   │   └── page.tsx    # updated to pass editEmail function to SettingsTab
-│   │   ├── settings/
-│   │   │   └── page.tsx  # route interceptor for profile settings
-│   │   ├── globals.scss
-│   │   ├── layout.tsx
-│   │   └── page.tsx
-│   ├── components/        # moved from src/pages/Home/Components
-│   │   ├── Card/
-│   │   │   ├── ProductCard.scss
-│   │   │   └── ProductCard.tsx        # updated to use Next.js Link for navigation to product/:id
-│   │   ├── Categories/
-│   │   ├── FilterModal/
-│   │   │   ├── components/
-│   │   │   │   └── ColorPicker/
-│   │   │   ├── constants.ts
-│   │   │   ├── FilterModal.style.ts
-│   │   │   ├── index.tsx
-│   │   │   └── types.ts
-│   │   ├── Footer/
-│   │   ├── Header/
-│   │   ├── ProductListing/
-│   │   └── Search/
-│   │       ├── Search.scss
-│   │       └── Search.tsx
+│   │   │   │   └── useProfileData.ts   # hook for fetching and managing profile data, including favorites
+│   │   │   ├── types/
+│   │   │   │   └── index.ts            # updated with ProductStatusTab type and Ad interface with status
+│   │   │   └── page.tsx                # profile page component that uses the useProfileData hook
+│   │   └── settings/
+│   ├── components/
+│   │   ├── card/
+│   │   │   └── productcard.tsx         # product card component with favorite toggle functionality
+│   │   ├── categories/
+│   │   ├── filtermodal/
+│   │   │   └── components/
+│   │   │       └── colorpicker/
+│   │   ├── footer/
+│   │   ├── header/
+│   │   ├── productlisting/
+│   │   │   └── productlisting.tsx      # product listing with favorites support
+│   │   └── search/
 │   ├── context/
 │   ├── pages/
 │   │   ├── auth/
-│   │   ├── home/
-│   │   │   └── Home.tsx            # main home page component
-│   │   ├── _app.tsx
-│   │   └── _document.tsx
+│   │   └── home/
+│   │       ├── Home.tsx                # home page with favorites integration
+│   │       └── components/
+│   │           └── components/
+│   │               ├── card/
+│   │               └── productlisting/
 │   └── utils/
 ├── next.config.js
 ├── next.config.ts
@@ -73,3 +67,12 @@ phono-frontend/
 ```
 
 this structure represents the main files and directories in the phono-frontend project, excluding build directories, node_modules, and other files/directories that might be in .gitignore.
+
+Key observations:
+
+1. The product response already includes the comments array in the API response
+2. The product detail page (`/app/product/[id]/page.tsx`) still makes separate API calls to fetch comments, but this is redundant
+3. The Comment interface in `api/types/index.ts` matches the structure of comments in the product response
+4. The API includes separate comment endpoints for adding, updating, and deleting comments, but fetching comments can use the data already in the product response
+
+According to the user's note, there's no need to fetch comments separately when clicking on the comments tab - they can use the comments already included in the product response.

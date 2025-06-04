@@ -21,6 +21,16 @@ const convertProductToAd = (
     const mainImage = product.images.find((img) => img.is_main);
     imageUrl = mainImage ? mainImage.url : product.images[0].url;
   }
+
+  // Determine product status
+  let status: "active" | "waiting" | "deactive" = "active";
+
+  if (product.is_archived || product.is_sold) {
+    status = "deactive";
+  } else if (!product.is_checked) {
+    status = "waiting";
+  }
+
   return {
     id: product.id.toString(),
     title: product.title,
@@ -31,6 +41,10 @@ const convertProductToAd = (
     currency: product.currency_id === 1 ? "UZS" : "USD",
     isFavorite,
     tags: product.floor_price ? ["Торг есть"] : [],
+    status,
+    is_archived: product.is_archived,
+    is_checked: product.is_checked,
+    is_sold: product.is_sold,
   };
 };
 
@@ -60,6 +74,7 @@ export const useProfileData = () => {
   const router = useRouter();
   const [user, setUser] = useState<UserProfile | null>(null);
   const [ads, setAds] = useState<Ad[]>([]);
+  const [favoriteAds, setFavoriteAds] = useState<Ad[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<ActiveProfileTab>("ads");
@@ -85,17 +100,49 @@ export const useProfileData = () => {
       const profileData = await api.user.getProfile();
       setUser(mapApiProfileToLocalProfile(profileData));
 
-      // Map products to ads, marking favorites
-      const favoriteIds = Array.isArray(profileData.favourite_items)
-        ? profileData.favourite_items.map((fav: any) => fav.id)
-        : [];
+      // Map user's own products to ads
       const userAds = Array.isArray(profileData.products)
         ? profileData.products
         : [];
       const formattedAds = userAds.map((product: Product) =>
-        convertProductToAd(product, favoriteIds.includes(product.id))
+        convertProductToAd(product, false)
       );
       setAds(formattedAds);
+
+      // Get the favorite product IDs from the user's favorite_items
+      const favoriteProductIds = Array.isArray(profileData.favourite_items)
+        ? profileData.favourite_items.map((fav: any) => fav.product_id)
+        : [];
+
+      if (favoriteProductIds.length > 0) {
+        try {
+          // Fetch detailed product information for each favorited product
+          const favoriteProducts: Product[] = [];
+
+          // Since there's no endpoint to fetch multiple products at once,
+          // we'll fetch them one by one
+          for (const productId of favoriteProductIds) {
+            try {
+              const product = await api.product.getById(productId);
+              favoriteProducts.push(product);
+            } catch (err) {
+              console.error(
+                `Error fetching favorite product ${productId}:`,
+                err
+              );
+              // Continue with other products even if one fails
+            }
+          }
+
+          // Convert fetched products to Ad format with isFavorite=true
+          const formattedFavoriteAds = favoriteProducts.map((product) =>
+            convertProductToAd(product, true)
+          );
+          setFavoriteAds(formattedFavoriteAds);
+        } catch (err) {
+          console.error("Error fetching favorite products:", err);
+        }
+      }
     } catch (err) {
       console.error("Error fetching user profile:", err);
       const errorMessage =
@@ -163,23 +210,49 @@ export const useProfileData = () => {
   );
 
   // Toggle favorite status for an ad
-  const toggleFavoriteAd = useCallback(async (adId: string) => {
-    try {
-      await api.user.toggleFavorite(parseInt(adId));
+  const toggleFavoriteAd = useCallback(
+    async (adId: string) => {
+      try {
+        await api.user.toggleFavorite(parseInt(adId));
 
-      // Update local state to reflect the change
-      setAds((prevAds) =>
-        prevAds.map((ad) =>
-          ad.id === adId ? { ...ad, isFavorite: !ad.isFavorite } : ad
-        )
-      );
-    } catch (err) {
-      console.error("Error toggling favorite:", err);
-      setError(
-        err instanceof Error ? err.message : "Failed to toggle favorite"
-      );
-    }
-  }, []);
+        // Update local state to reflect the change
+        setAds((prevAds) =>
+          prevAds.map((ad) =>
+            ad.id === adId ? { ...ad, isFavorite: !ad.isFavorite } : ad
+          )
+        );
+
+        // Also update favoriteAds state
+        const adToToggle = [...ads, ...favoriteAds].find(
+          (ad) => ad.id === adId
+        );
+
+        if (adToToggle) {
+          if (adToToggle.isFavorite) {
+            // Remove from favorites if it was favorited
+            setFavoriteAds((prevFavorites) =>
+              prevFavorites.filter((fav) => fav.id !== adId)
+            );
+          } else {
+            // Add to favorites if it wasn't favorited
+            setFavoriteAds((prevFavorites) => [
+              ...prevFavorites,
+              { ...adToToggle, isFavorite: true },
+            ]);
+          }
+        }
+
+        // Refresh profile to ensure data is up to date
+        fetchUserProfile();
+      } catch (err) {
+        console.error("Error toggling favorite:", err);
+        setError(
+          err instanceof Error ? err.message : "Failed to toggle favorite"
+        );
+      }
+    },
+    [ads, favoriteAds, fetchUserProfile]
+  );
 
   // Add phone number
   const addPhoneNumber = useCallback(async (phone: string) => {
@@ -382,6 +455,7 @@ export const useProfileData = () => {
   return {
     user,
     ads,
+    favoriteAds,
     isLoading,
     error,
     activeTab,

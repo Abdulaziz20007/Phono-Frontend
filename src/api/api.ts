@@ -10,6 +10,7 @@ import {
   Model,
   Brand,
   HomepageData,
+  Comment,
 } from "./types";
 
 // Determine if we're running on the client side
@@ -422,10 +423,139 @@ export const api = {
     },
   },
 
+  product: {
+    getAll: async (limit?: number): Promise<Product[]> => {
+      try {
+        const url = limit ? `/product?limit=${limit}` : "/product";
+        const response = await axiosInstance.get(url);
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          throw new Error(
+            error.response.data.message || `API error: ${error.response.status}`
+          );
+        }
+        throw new Error("Network error occurred");
+      }
+    },
+
+    getById: async (id: string | number): Promise<Product> => {
+      try {
+        const response = await axiosInstance.get(`/product/${id}`);
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          throw new Error(
+            error.response.data.message || `API error: ${error.response.status}`
+          );
+        }
+        throw new Error("Network error occurred");
+      }
+    },
+
+    getByBrand: async (brandId: number): Promise<Product[]> => {
+      try {
+        const response = await axiosInstance.get(`/product/brand/${brandId}`);
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          throw new Error(
+            error.response.data.message || `API error: ${error.response.status}`
+          );
+        }
+        throw new Error("Network error occurred");
+      }
+    },
+
+    getByModel: async (modelId: number): Promise<Product[]> => {
+      try {
+        const response = await axiosInstance.get(`/product/model/${modelId}`);
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          throw new Error(
+            error.response.data.message || `API error: ${error.response.status}`
+          );
+        }
+        throw new Error("Network error occurred");
+      }
+    },
+  },
+
   home: {
     getData: async (): Promise<HomepageData> => {
       try {
         const response = await axiosInstance.get("/web");
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          throw new Error(
+            error.response.data.message || `API error: ${error.response.status}`
+          );
+        }
+        throw new Error("Network error occurred");
+      }
+    },
+  },
+
+  comment: {
+    getProductComments: async (
+      productId: number | string
+    ): Promise<Comment[]> => {
+      try {
+        const response = await axiosInstance.get(
+          `/comment/product/${productId}`
+        );
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          throw new Error(
+            error.response.data.message || `API error: ${error.response.status}`
+          );
+        }
+        throw new Error("Network error occurred");
+      }
+    },
+
+    addComment: async (data: {
+      product_id: number;
+      text: string;
+    }): Promise<Comment> => {
+      try {
+        const response = await axiosInstance.post("/comment", data);
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          throw new Error(
+            error.response.data.message || `API error: ${error.response.status}`
+          );
+        }
+        throw new Error("Network error occurred");
+      }
+    },
+
+    updateComment: async (
+      commentId: number,
+      text: string
+    ): Promise<Comment> => {
+      try {
+        const response = await axiosInstance.patch(`/comment/${commentId}`, {
+          text,
+        });
+        return response.data;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          throw new Error(
+            error.response.data.message || `API error: ${error.response.status}`
+          );
+        }
+        throw new Error("Network error occurred");
+      }
+    },
+
+    deleteComment: async (commentId: number): Promise<{ success: boolean }> => {
+      try {
+        const response = await axiosInstance.delete(`/comment/${commentId}`);
         return response.data;
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
@@ -451,4 +581,5 @@ export type {
   Model,
   Brand,
   HomepageData,
+  Comment,
 };

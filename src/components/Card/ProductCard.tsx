@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import "./ProductCard.scss";
+import { api } from "../../api/api";
+import toast from "react-hot-toast";
 
 interface ProductCardProps {
   id: number;
@@ -26,13 +28,60 @@ function ProductCard({
   isFavorite = false,
 }: ProductCardProps) {
   const [favorite, setFavorite] = useState(isFavorite);
+  const [isLoading, setIsLoading] = useState(false);
 
   const defaultImage = "/images/default-phone.jpg";
 
-  const toggleFavorite = (e: React.MouseEvent) => {
+  // Check if the user is authenticated
+  const checkAuthentication = () => {
+    if (typeof window !== "undefined") {
+      return !!localStorage.getItem("accessToken");
+    }
+    return false;
+  };
+
+  const toggleFavorite = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setFavorite(!favorite);
+
+    if (isLoading) return;
+
+    // Check if user is authenticated
+    if (!checkAuthentication()) {
+      // Use direct navigation instead of router.push
+      toast.error("Пожалуйста, войдите в систему, чтобы добавить в избранное");
+      if (typeof window !== "undefined") {
+        window.location.href = "/auth";
+      }
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      if (favorite) {
+        // Remove from favorites
+        await api.user.toggleFavorite(id);
+        setFavorite(false);
+        toast.success("Удалено из избранного");
+      } else {
+        // Add to favorites
+        await api.user.addToFavorites(id);
+        setFavorite(true);
+        toast.success("Добавлено в избранное");
+      }
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+
+      // Only show error if it's not the "already in favorites" case
+      if (
+        error instanceof Error &&
+        error.message !== "Mahsulot allaqachon sevimlilarda"
+      ) {
+        toast.error("Не удалось обновить избранное");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -45,8 +94,11 @@ function ProductCard({
             className="product-image"
           />
           <button
-            className={`favorite-button ${favorite ? "active" : ""}`}
+            className={`favorite-button ${favorite ? "active" : ""} ${
+              isLoading ? "loading" : ""
+            }`}
             onClick={toggleFavorite}
+            disabled={isLoading}
             aria-label={
               favorite ? "убрать из избранного" : "добавить в избранное"
             }

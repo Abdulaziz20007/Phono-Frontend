@@ -27,6 +27,21 @@ export interface TokenResponse {
   accessToken: string;
 }
 
+export interface Comment {
+  id: number;
+  user_id: number;
+  product_id: number;
+  text: string;
+  created_at: string;
+  updated_at: string;
+  user?: {
+    id: number;
+    name: string;
+    surname: string;
+    avatar: string | null;
+  };
+}
+
 export interface UserProfile {
   id: number;
   name: string;
@@ -127,6 +142,7 @@ export interface Product {
   brand?: ProductBrand;
   model?: ProductModel;
   user?: ProductUser;
+  comments?: Comment[];
 }
 
 export interface Model {

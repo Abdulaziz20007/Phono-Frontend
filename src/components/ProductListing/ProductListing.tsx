@@ -17,9 +17,16 @@ interface ProductCardProps {
 interface ProductListingProps {
   products: Product[] | undefined;
   brands: Brand[] | undefined;
+  favoriteProductIds?: number[];
+  isAuthenticated?: boolean;
 }
 
-function ProductListing({ products = [], brands = [] }: ProductListingProps) {
+function ProductListing({
+  products = [],
+  brands = [],
+  favoriteProductIds = [],
+  isAuthenticated = false,
+}: ProductListingProps) {
   // Get main image URL from product images array
   const getMainImage = (product: Product): string | undefined => {
     if (!product.images || product.images.length === 0) return undefined;
@@ -53,6 +60,11 @@ function ProductListing({ products = [], brands = [] }: ProductListingProps) {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
   };
 
+  // Check if a product is in the user's favorites
+  const isProductFavorite = (productId: number): boolean => {
+    return isAuthenticated && favoriteProductIds.includes(productId);
+  };
+
   return (
     <div className="product-listing-section">
       <h2 className="product-listing-title">Объявления</h2>
@@ -67,6 +79,7 @@ function ProductListing({ products = [], brands = [] }: ProductListingProps) {
             condition={product.is_new ? "Новый" : "Б/у"}
             price={formatPrice(product.price)}
             isNew={product.is_new}
+            isFavorite={isProductFavorite(product.id)}
           />
         ))}
       </div>

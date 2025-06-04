@@ -24,14 +24,7 @@ import {
 } from "./components/ui/SharedComponents";
 
 // Placeholder Icons
-import {
-  FaUserEdit,
-  FaPlus,
-  FaGlobe,
-  FaSignOutAlt,
-  FaExclamationTriangle,
-  FaSpinner,
-} from "react-icons/fa";
+import { FaExclamationTriangle, FaSpinner } from "react-icons/fa";
 
 // ProfilePageContainer is now imported from SharedComponents
 
@@ -53,6 +46,7 @@ export default function ProfilePage() {
   const {
     user,
     ads,
+    favoriteAds,
     isLoading,
     error,
     activeTab,
@@ -191,7 +185,7 @@ export default function ProfilePage() {
               </>
             ) : (
               <FavoritesTab
-                favoriteAds={ads.filter((ad) => ad.isFavorite)}
+                favoriteAds={favoriteAds}
                 onToggleFavorite={toggleFavoriteAd}
               />
             )}

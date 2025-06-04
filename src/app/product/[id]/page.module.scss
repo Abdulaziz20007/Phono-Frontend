@@ -293,6 +293,156 @@
   line-height: 1.6;
 }
 
+// Comments section styles
+.commentsSection {
+  margin-top: 20px;
+}
+
+.commentForm {
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.commentInput {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: inherit;
+  resize: vertical;
+  font-size: 14px;
+  transition: border-color 0.2s;
+
+  &:focus {
+    border-color: #5e35b1;
+    outline: none;
+  }
+}
+
+.commentSubmit {
+  align-self: flex-end;
+  background-color: #5e35b1;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &:hover {
+    background-color: #4527a0;
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+}
+
+.authPrompt {
+  background-color: #f9f9f9;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+
+  p {
+    margin: 0;
+    color: #666;
+
+    a {
+      color: #5e35b1;
+      text-decoration: none;
+      font-weight: 500;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+.commentsList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.commentItem {
+  padding: 16px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.commentHeader {
+  margin-bottom: 12px;
+}
+
+.commentUser {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.commentAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.defaultCommentAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #5e35b1;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.commentUserInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.commentUserName {
+  font-weight: 500;
+  color: #333;
+  font-size: 14px;
+}
+
+.commentDate {
+  color: #888;
+  font-size: 12px;
+}
+
+.commentText {
+  color: #444;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.commentLoading {
+  text-align: center;
+  color: #888;
+  padding: 20px;
+}
+
+.noComments {
+  text-align: center;
+  color: #888;
+  padding: 20px;
+  font-style: italic;
+}
+
 // seller section styles
 .sellerSection {
   margin-bottom: 40px;

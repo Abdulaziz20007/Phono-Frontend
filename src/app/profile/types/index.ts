@@ -53,6 +53,12 @@ export interface Ad {
   currency: string;
   isFavorite: boolean;
   tags?: string[];
+  status: "active" | "waiting" | "deactive";
+  is_archived: boolean;
+  is_checked: boolean;
+  is_sold: boolean;
 }
 
 export type ActiveProfileTab = "ads" | "messages" | "favorites" | "settings";
+
+export type ProductStatusTab = "active" | "waiting" | "deactive" | "all";

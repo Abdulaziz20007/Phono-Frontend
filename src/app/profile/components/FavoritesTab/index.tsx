@@ -1,18 +1,15 @@
 "use client";
 
-// app/profile/components/FavoritesTab/index.tsx
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { Ad } from "../../types"; // Ad tipini import qilamiz
-import AdCard from "../AdsTab/AdCard"; // Mavjud AdCard komponentini qayta ishlatamiz
-import { api } from "../../../../api/api";
+import { Ad } from "../../types";
+import AdCard from "../AdsTab/AdCard";
 import { Product } from "../../../../api/types";
 import { FaSpinner } from "react-icons/fa";
-import toast from "react-hot-toast";
 
 interface FavoritesTabProps {
   favoriteAds: Ad[];
-  onToggleFavorite: (adId: string) => void; // Bu ham kerak bo'ladi
+  onToggleFavorite: (adId: string) => Promise<void>;
 }
 
 const FavoritesContainer = styled.div`
@@ -27,7 +24,7 @@ const AdListGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
-  margin-top: 0; // Chunki SearchFilter yo'q
+  margin-top: 0;
 `;
 
 const NoFavoritesText = styled.p`
@@ -65,7 +62,6 @@ const ErrorContainer = styled.div`
   padding: 20px;
 `;
 
-// Helper function to convert Product to Ad
 const convertProductToAd = (product: Product): Ad => {
   let imageUrl = "/images/placeholder-phone.jpg";
   if (product.images && product.images.length > 0) {
@@ -86,42 +82,12 @@ const convertProductToAd = (product: Product): Ad => {
   };
 };
 
-export default function FavoritesTab() {
-  const [favoriteAds, setFavoriteAds] = useState<Ad[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+export default function FavoritesTab({
+  favoriteAds,
+  onToggleFavorite,
+}: FavoritesTabProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const fetchFavorites = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const products = await api.user.getFavouriteItems();
-      const ads = products.map(convertProductToAd);
-      setFavoriteAds(ads);
-    } catch (err) {
-      console.error("Error fetching favorites:", err);
-      setError("Не удалось загрузить избранные объявления");
-      toast.error("Не удалось загрузить избранные объявления");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchFavorites();
-  }, []);
-
-  const handleToggleFavorite = async (adId: string) => {
-    try {
-      await api.user.toggleFavorite(parseInt(adId));
-      // Remove the ad from the list after unfavoriting
-      setFavoriteAds((prevAds) => prevAds.filter((ad) => ad.id !== adId));
-      toast.success("Объявление удалено из избранного");
-    } catch (err) {
-      console.error("Error toggling favorite:", err);
-      toast.error("Не удалось обновить избранное");
-    }
-  };
 
   if (isLoading) {
     return (
@@ -155,7 +121,7 @@ export default function FavoritesTab() {
     <FavoritesContainer>
       <AdListGrid>
         {favoriteAds.map((ad) => (
-          <AdCard key={ad.id} ad={ad} onToggleFavorite={handleToggleFavorite} />
+          <AdCard key={ad.id} ad={ad} onToggleFavorite={onToggleFavorite} />
         ))}
       </AdListGrid>
     </FavoritesContainer>

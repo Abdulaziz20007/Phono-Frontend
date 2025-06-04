@@ -5,8 +5,8 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./page.module.scss";
-import { FiHeart, FiMessageSquare, FiPhone } from "react-icons/fi";
-import { api, Product as ProductType } from "../../../api/api";
+import { FiHeart, FiMessageSquare, FiPhone, FiSend } from "react-icons/fi";
+import { api, Product as ProductType, Comment } from "../../../api/api";
 
 // interface for the product data from api
 interface ProductImage {
@@ -86,6 +86,7 @@ interface Product {
   brand: Brand;
   model: Model;
   user: User;
+  comments?: Comment[];
 }
 
 const ProductPage = () => {
@@ -100,6 +101,19 @@ const ProductPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [activeImage, setActiveImage] = useState(0);
   const [favorite, setFavorite] = useState(false);
+  const [activeTab, setActiveTab] = useState<"description" | "comments">(
+    "description"
+  );
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [newComment, setNewComment] = useState("");
+  const [submittingComment, setSubmittingComment] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Check if user is authenticated
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    setIsAuthenticated(!!token);
+  }, []);
 
   // get main image url or first image if no main image is set
   const getMainImageUrl = (images: ProductImage[]): string => {
@@ -113,6 +127,11 @@ const ProductPage = () => {
     try {
       const productData = await api.product.getById(productId);
       setProduct(productData);
+
+      // Initialize comments from product data
+      if (productData.comments) {
+        setComments(productData.comments);
+      }
 
       // fetch recommended products
       await fetchRecommendedProducts(productData);
@@ -158,6 +177,39 @@ const ProductPage = () => {
     }
   };
 
+  // handle submitting a new comment
+  const handleCommentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!newComment.trim() || !id || submittingComment || !isAuthenticated)
+      return;
+
+    setSubmittingComment(true);
+    try {
+      const comment = await api.comment.addComment({
+        product_id: Number(id),
+        text: newComment.trim(),
+      });
+
+      // Add the new comment to the list
+      setComments((prev) => [comment, ...prev]);
+
+      // Add comment to product data too to keep it in sync
+      if (product && product.comments) {
+        setProduct({
+          ...product,
+          comments: [comment, ...product.comments],
+        });
+      }
+
+      setNewComment("");
+    } catch (err) {
+      console.error("error posting comment:", err);
+    } finally {
+      setSubmittingComment(false);
+    }
+  };
+
   useEffect(() => {
     if (id) {
       fetchProductData(id);
@@ -179,6 +231,27 @@ const ProductPage = () => {
   // format date for display
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
+    return date.toLocaleDateString("ru-RU", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  };
+
+  // Format time since comment was posted
+  const formatCommentDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffMins < 1) return "только что";
+    if (diffMins < 60) return `${diffMins} мин. назад`;
+    if (diffHours < 24) return `${diffHours} ч. назад`;
+    if (diffDays < 7) return `${diffDays} д. назад`;
+
     return date.toLocaleDateString("ru-RU", {
       day: "numeric",
       month: "long",
@@ -345,19 +418,104 @@ const ProductPage = () => {
         </div>
       </div>
 
-      {/* description section */}
+      {/* description and comments section */}
       <div className={styles.descriptionSection}>
         <div className={styles.tabs}>
-          <button className={`${styles.tabButton} ${styles.active}`}>
+          <button
+            className={`${styles.tabButton} ${
+              activeTab === "description" ? styles.active : ""
+            }`}
+            onClick={() => setActiveTab("description")}
+          >
             описание
           </button>
-          <button className={styles.tabButton}>
-            от пользователя ({product?.user?.products?.length || 0})
+          <button
+            className={`${styles.tabButton} ${
+              activeTab === "comments" ? styles.active : ""
+            }`}
+            onClick={() => setActiveTab("comments")}
+          >
+            комментарии ({comments.length})
           </button>
         </div>
-        <div className={styles.descriptionContent}>
-          <p>{product.description}</p>
-        </div>
+
+        {activeTab === "description" && (
+          <div className={styles.descriptionContent}>
+            <p>{product.description}</p>
+          </div>
+        )}
+
+        {activeTab === "comments" && (
+          <div className={styles.commentsSection}>
+            {/* Comment form */}
+            {isAuthenticated ? (
+              <form
+                className={styles.commentForm}
+                onSubmit={handleCommentSubmit}
+              >
+                <textarea
+                  className={styles.commentInput}
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  placeholder="Напишите свой комментарий..."
+                  rows={3}
+                />
+                <button
+                  type="submit"
+                  className={styles.commentSubmit}
+                  disabled={!newComment.trim() || submittingComment}
+                >
+                  <FiSend /> Отправить
+                </button>
+              </form>
+            ) : (
+              <div className={styles.authPrompt}>
+                <p>
+                  Чтобы оставить комментарий, пожалуйста,{" "}
+                  <Link href="/auth/login">войдите</Link> в свой аккаунт
+                </p>
+              </div>
+            )}
+
+            {/* Comments list */}
+            <div className={styles.commentsList}>
+              {comments.length > 0 ? (
+                comments.map((comment) => (
+                  <div key={comment.id} className={styles.commentItem}>
+                    <div className={styles.commentHeader}>
+                      <div className={styles.commentUser}>
+                        {comment.user?.avatar ? (
+                          <img
+                            src={comment.user.avatar}
+                            alt={`${comment.user.name} ${comment.user.surname}`}
+                            className={styles.commentAvatar}
+                          />
+                        ) : (
+                          <div className={styles.defaultCommentAvatar}>
+                            {comment.user?.name?.charAt(0) || ""}
+                          </div>
+                        )}
+                        <div className={styles.commentUserInfo}>
+                          <span className={styles.commentUserName}>
+                            {comment.user?.name} {comment.user?.surname}
+                          </span>
+                          <span className={styles.commentDate}>
+                            {formatCommentDate(comment.created_at)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className={styles.commentText}>{comment.text}</div>
+                  </div>
+                ))
+              ) : (
+                <div className={styles.noComments}>
+                  Пока нет комментариев. Будьте первым, кто оставит комментарий!
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* seller info */}
