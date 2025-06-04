@@ -35,7 +35,6 @@ phono-frontend/
 │   │   │   │   └── index.ts            # updated with ProductStatusTab type and Ad interface with status
 │   │   │   └── page.tsx                # profile page component that uses the useProfileData hook
 │   │   └── settings/
-│   │       └── page.tsx                # settings redirect page that sets session storage and redirects to profile
 │   ├── components/
 │   │   ├── card/
 │   │   │   └── productcard.tsx         # product card component with favorite toggle functionality
@@ -51,9 +50,6 @@ phono-frontend/
 │   ├── context/
 │   ├── pages/
 │   │   ├── auth/
-│   │   ├── product/
-│   │   │   └── [id].tsx                # placeholder file to redirect to app router implementation
-│   │   ├── settings.tsx                # placeholder file to redirect to app router implementation
 │   │   └── home/
 │   │       ├── Home.tsx                # home page with favorites integration
 │   │       └── components/
@@ -61,7 +57,7 @@ phono-frontend/
 │   │               ├── card/
 │   │               └── productlisting/
 │   └── utils/
-├── next.config.js                      # updated with pageExtensions and experimental.appDir settings
+├── next.config.js
 ├── next.config.ts
 ├── package.json
 ├── package-lock.json
@@ -78,6 +74,5 @@ Key observations:
 2. The product detail page (`/app/product/[id]/page.tsx`) still makes separate API calls to fetch comments, but this is redundant
 3. The Comment interface in `api/types/index.ts` matches the structure of comments in the product response
 4. The API includes separate comment endpoints for adding, updating, and deleting comments, but fetching comments can use the data already in the product response
-5. Placeholder files added in the Pages Router to support the App Router implementation
 
 According to the user's note, there's no need to fetch comments separately when clicking on the comments tab - they can use the comments already included in the product response.

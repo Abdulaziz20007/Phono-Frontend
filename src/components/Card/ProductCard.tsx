@@ -30,7 +30,7 @@ function ProductCard({
   const [favorite, setFavorite] = useState(isFavorite);
   const [isLoading, setIsLoading] = useState(false);
 
-  const defaultImage = "/images/default-phone.jpg";
+  const defaultImage = "/images/placeholder-phone1.jpg";
 
   // Check if the user is authenticated
   const checkAuthentication = () => {

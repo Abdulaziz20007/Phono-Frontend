@@ -31,11 +31,15 @@ function ProductListing({
   const getMainImage = (product: Product): string | undefined => {
     if (!product.images || product.images.length === 0) return undefined;
 
-    // Try to find the main image
-    const mainImage = product.images.find((img) => img.is_main);
+    // Check if there are any valid images with URLs
+    const validImages = product.images.filter((img) => img && img.url);
+    if (validImages.length === 0) return undefined;
 
-    // If there's a main image, return its URL, otherwise return the first image's URL
-    return mainImage ? mainImage.url : product.images[0].url;
+    // Try to find the main image
+    const mainImage = validImages.find((img) => img.is_main);
+
+    // If there's a main image, return its URL, otherwise return the first valid image's URL
+    return mainImage ? mainImage.url : validImages[0].url;
   };
 
   // Function to get brand and model name (using nested objects if available)

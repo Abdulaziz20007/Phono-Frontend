@@ -11,12 +11,18 @@ const nextConfig = {
       // add any other domains you need
     ],
   },
-  // Configure page extensions to prevent conflicts between app/ and pages/
-  pageExtensions: ["page.tsx", "page.ts", "page.jsx", "page.js"],
-  // Explicitly handle app directory usage
+  // Configure which paths should be handled by which router
+  // The excludePaths option is used to specify routes that don't exist in the Pages Router
   experimental: {
-    appDir: true,
+    ppr: true,
+    missingSuspenseWithCSRBailout: false,
   },
+  // Tell Next.js which pages to exclude from the Pages Router
+  skipTrailingSlashRedirect: true,
+  skipMiddlewareUrlNormalize: true,
+  // These paths should be excluded from Pages Router processing
+  // as they exist only in the App Router
+  pageExtensions: ["tsx", "ts", "jsx", "js"],
 };
 
 module.exports = nextConfig;
