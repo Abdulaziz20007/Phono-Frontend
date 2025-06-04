@@ -38,7 +38,7 @@ function Search() {
         <div className="search-input-container">
           <input
             type="text"
-            placeholder="Type e.g Slots games"
+            placeholder="Введите например S22 Ultra"
             value={searchText}
             onChange={handleSearchChange}
             className="search-input"

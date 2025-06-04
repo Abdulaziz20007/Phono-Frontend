@@ -42,7 +42,7 @@ export default function AdsSearchFilter({
         <FaSearch />
         <Input
           type="text"
-          placeholder="Type e.g. S22 Ultra"
+          placeholder="Например, S22 Ultra"
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
         />
