@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import "./ProductCard.scss";
-import { api } from "../../../../api/api";
+import { api } from "../../../../../api/api";
 import toast from "react-hot-toast";
 
 interface ProductCardProps {

@@ -79,6 +79,10 @@ const convertProductToAd = (product: Product): Ad => {
     currency: product.currency_id === 1 ? "UZS" : "USD",
     isFavorite: true,
     tags: product.floor_price ? ["Торг есть"] : [],
+    status: "active",
+    is_archived: false,
+    is_checked: true,
+    is_sold: false,
   };
 };
 
