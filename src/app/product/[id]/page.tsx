@@ -472,7 +472,7 @@ const ProductPage = () => {
               <div className={styles.authPrompt}>
                 <p>
                   Чтобы оставить комментарий, пожалуйста,{" "}
-                  <Link href="/auth/login">войдите</Link> в свой аккаунт
+                  <Link href="/auth">войдите</Link> в свой аккаунт
                 </p>
               </div>
             )}
