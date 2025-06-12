@@ -10,6 +10,8 @@ import {
   Button,
 } from "../components/ui/SharedComponents";
 import { FaUpload } from "react-icons/fa";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface EditProfileModalProps {
   user: UserProfile;
@@ -18,7 +20,7 @@ interface EditProfileModalProps {
     updatedData: Partial<
       Pick<
         UserProfile,
-        "name" | "surname" | "dob" | "avatar" | "usernameForDisplay"
+        "name" | "surname" | "currency_id" | "is_active" | "avatar"
       >
     >
   ) => void;
@@ -74,12 +76,9 @@ export default function EditProfileModal({
 }: EditProfileModalProps) {
   const [name, setName] = useState(user.name || "");
   const [surname, setSurname] = useState(user.surname || "");
-  const [dob, setDob] = useState(user.dob || "");
-  const [usernameForDisplay, setUsernameForDisplay] = useState(
-    user.usernameForDisplay || ""
-  );
+  const [currencyId, setCurrencyId] = useState<number>(user.currency_id);
+  const [isActive, setIsActive] = useState<boolean>(user.is_active);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
-
   const [avatarPreviewUrl, setAvatarPreviewUrl] = useState(
     user.avatar || "/images/default-avatar.png"
   );
@@ -92,27 +91,23 @@ export default function EditProfileModal({
     }
   };
 
-  const handleSave = () => {
-    const updatedData: Partial<
-      Pick<
-        UserProfile,
-        "name" | "surname" | "dob" | "avatar" | "usernameForDisplay"
-      >
-    > = {
+  const handleSave = async () => {
+    const updatedData: any = {
       name,
       surname,
-      usernameForDisplay,
+      currency_id: currencyId,
+      is_active: isActive,
     };
     if (avatarFile) {
-      updatedData.avatar = avatarPreviewUrl;
-    } else if (
-      avatarPreviewUrl === "/images/default-avatar.png" &&
-      user.avatar
-    ) {
-      updatedData.avatar = null;
+      updatedData.avatar = avatarFile;
     }
-
-    onSave(updatedData);
+    try {
+      await onSave(updatedData);
+      toast.success("профиль успешно обновлен");
+      onClose();
+    } catch (error) {
+      toast.error("ошибка при сохранении профиля");
+    }
   };
 
   return (
@@ -120,6 +115,11 @@ export default function EditProfileModal({
       <ModalContent onClick={(e) => e.stopPropagation()}>
         <ModalCloseButton onClick={onClose}>×</ModalCloseButton>
         <h2>Редактировать профиль</h2>
+        <ToastContainer
+          position="top-center"
+          autoClose={2000}
+          hideProgressBar
+        />
 
         <AvatarUploadContainer>
           <AvatarPreview
@@ -129,24 +129,13 @@ export default function EditProfileModal({
             height={80}
           />
           <UploadButtonLabel>
-            <FaUpload /> Загрузить
+            <FaUpload /> загрузить
             <input type="file" accept="image/*" onChange={handleAvatarChange} />
           </UploadButtonLabel>
         </AvatarUploadContainer>
 
         <FormField>
-          <label htmlFor="usernameDisp">Отображаемое имя (Username)</label>
-          <Input
-            id="usernameDisp"
-            value={usernameForDisplay}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setUsernameForDisplay(e.target.value)
-            }
-          />
-        </FormField>
-
-        <FormField>
-          <label htmlFor="profileName">Имя</label>
+          <label htmlFor="profileName">имя</label>
           <Input
             id="profileName"
             value={name}
@@ -156,24 +145,12 @@ export default function EditProfileModal({
           />
         </FormField>
         <FormField>
-          <label htmlFor="profileSurname">Фамилия</label>{" "}
+          <label htmlFor="profileSurname">фамилия</label>
           <Input
             id="profileSurname"
             value={surname}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setSurname(e.target.value)
-            }
-          />
-        </FormField>
-
-        <FormField>
-          <label htmlFor="profileDob">Дата рождения</label>
-          <Input
-            id="profileDob"
-            type="date"
-            value={dob}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setDob(e.target.value)
             }
           />
         </FormField>

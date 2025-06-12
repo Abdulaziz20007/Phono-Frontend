@@ -59,8 +59,8 @@ export interface ApiResponse {
 
 const isBrowser = typeof window !== "undefined";
 
-// export const BASE_URL = "http://localhost:3000";
-export const BASE_URL = "https://api.phono.ligma.uz";
+export const BASE_URL = "http://localhost:3000";
+// export const BASE_URL = "https://api.phono.ligma.uz";
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -214,9 +214,30 @@ export const api = {
       }
     },
 
-    updateProfile: async (data: Partial<UserProfile>): Promise<UserProfile> => {
+    updateProfile: async (userId: number, data: any): Promise<UserProfile> => {
       try {
-        const response = await axiosInstance.patch("/user/profile", data);
+        let formData: FormData | null = null;
+        let headers = {};
+        if (data.avatar) {
+          formData = new FormData();
+          if (data.name) formData.append("name", data.name);
+          if (data.surname) formData.append("surname", data.surname);
+          if (data.currency_id)
+            formData.append("currency_id", String(data.currency_id));
+          if (typeof data.is_active !== "undefined")
+            formData.append("is_active", String(data.is_active));
+          formData.append("avatar", data.avatar);
+          headers = { "Content-Type": "multipart/form-data" };
+        }
+        const payload = formData || {
+          name: data.name,
+          surname: data.surname,
+          currency_id: data.currency_id,
+          is_active: data.is_active,
+        };
+        const response = await axiosInstance.patch(`/user/${userId}`, payload, {
+          headers,
+        });
         return response.data;
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {

@@ -6,6 +6,8 @@ export interface UserProfile {
   phone: string; // Asosiy telefon raqami (tahrirlanmasligi mumkin yoki alohida logika)
   avatar?: string | null; // Rasm URL'i
   balance: number; // Prisma'da Float
+  currency_id: number; // valyuta idsi (1: UZS, 2: USD)
+  is_active: boolean; // akkaunt aktivligi
   // currency_id: number; // Kerak bo'lsa, UI'da valyutani ko'rsatish uchun
   // is_active: boolean; // UI'da kerak bo'lmasligi mumkin
 

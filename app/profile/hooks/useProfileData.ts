@@ -183,13 +183,14 @@ export const useProfileData = () => {
       data: Partial<
         Pick<
           UserProfile,
-          "name" | "surname" | "dob" | "avatar" | "usernameForDisplay"
+          "name" | "surname" | "currency_id" | "is_active" | "avatar"
         >
       >
     ) => {
       try {
         setIsLoading(true);
-        const updatedProfile = await api.user.updateProfile(data);
+        if (!user) throw new Error("User not loaded");
+        const updatedProfile = await api.user.updateProfile(user.id, data);
         setUser((prevUser) => {
           if (!prevUser) return null;
           return {
@@ -206,7 +207,7 @@ export const useProfileData = () => {
         setIsLoading(false);
       }
     },
-    []
+    [user]
   );
 
   // Toggle favorite status for an ad
