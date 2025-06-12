@@ -1,0 +1,174 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.header {
+  background-color: #5e35b1;
+  color: white;
+  padding: 16px 0;
+}
+
+.headerContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.backLink {
+  a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 600;
+
+  a {
+    color: white;
+    text-decoration: none;
+  }
+}
+
+.headerButtons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.authLink {
+  color: white;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.footer {
+  background-color: #f9f9f9;
+  padding: 40px 0 20px;
+  margin-top: 40px;
+}
+
+.footerContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+}
+
+.footerLinks {
+  display: flex;
+  gap: 40px;
+
+  @media (max-width: 576px) {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+
+.footerColumn {
+  h4 {
+    color: #333;
+    font-size: 18px;
+    margin: 0 0 16px;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      margin-bottom: 10px;
+
+      a {
+        color: #666;
+        text-decoration: none;
+        font-size: 14px;
+
+        &:hover {
+          color: #5e35b1;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+.footerApps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  img {
+    height: 40px;
+  }
+}
+
+.footerBottom {
+  max-width: 1200px;
+  margin: 30px auto 0;
+  padding: 20px 20px 0;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #888;
+  font-size: 14px;
+
+  @media (max-width: 576px) {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+.socialIcons {
+  display: flex;
+  gap: 16px;
+
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #eee;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #ddd;
+    }
+
+    img {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}

@@ -1,0 +1,38 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# coding standards
+
+## typescript
+
+this project uses typescript. all new code should be properly typed.
+
+## naming conventions
+
+- use camelCase for variables and function names
+- use PascalCase for component names and type definitions
+- use kebab-case for file names of non-component files
+- use PascalCase for component file names
+
+## components
+
+- each component should be in its own directory with an index.ts(x) file
+- keep components focused on a single responsibility
+- extract reusable logic into custom hooks when appropriate
+
+## styles
+
+global styles are in the `/styles` directory. component-specific styles should be co-located with their components.
+
+## logging and comments
+
+- all logs and console messages should be in lowercase
+- all comments in code should be in lowercase
+- markdown documentation should be in lowercase
+- maintain proper code identifier casing (variable names, component names, etc.)
+
+## utility functions
+
+reusable utility functions should be placed in the `/utils` directory and properly exported.

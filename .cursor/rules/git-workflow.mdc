@@ -1,0 +1,35 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# git workflow
+
+## branches
+
+- the default branch is `main`
+- create feature branches with descriptive names for new features
+- create bugfix branches with descriptive names for bug fixes
+
+## commits
+
+this project follows conventional commits:
+
+- feat: a new feature
+- fix: a bug fix
+- docs: documentation changes
+- style: formatting, missing semicolons, etc; no code change
+- refactor: refactoring production code
+- test: adding tests, refactoring tests; no production code change
+- chore: updating build tasks, package manager configs, etc; no production code change
+
+examples:
+- `feat(product-listing): add pagination support`
+- `fix(auth): resolve login redirect issue`
+- `docs(readme): update installation instructions`
+
+## pull requests
+
+- create descriptive pull request titles
+- provide a detailed description of changes
+- link to related issues if applicable

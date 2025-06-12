@@ -1,0 +1,27 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# routing guide
+
+this project appears to use both the newer next.js app router and the legacy pages router.
+
+## app router (newer)
+
+the app router components are located in the `/app` directory:
+
+- [app/auth](mdc:app/auth): authentication related pages
+- [app/profile](mdc:app/profile): user profile pages
+- [app/settings](mdc:app/settings): settings pages
+  - [app/settings/product/[id]](mdc:app/settings/product/[id]): dynamic route for product settings
+
+## pages router (legacy)
+
+the legacy pages router components are located in the `/pages` directory:
+
+- [pages/Auth](mdc:pages/Auth): authentication pages
+- [pages/Home](mdc:pages/Home): home page
+- [pages/product](mdc:pages/product): product detail pages
+
+when creating new routes, prefer using the app router structure unless you have a specific reason to use the legacy pages router.

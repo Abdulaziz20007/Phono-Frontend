@@ -1,0 +1,29 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# components guide
+
+this project contains shared components that can be reused across different pages.
+
+## shared components
+
+the main shared components are located in the `/components` directory:
+
+- [Card](mdc:components/Card): product card display component
+- [Categories](mdc:components/Categories): category selection components
+- [FilterModal](mdc:components/FilterModal): filters for product search
+- [Footer](mdc:components/Footer): site footer component
+- [Header](mdc:components/Header): site header component
+- [ProductListing](mdc:components/ProductListing): product listing component
+- [Search](mdc:components/Search): search component
+
+## page-specific components
+
+page-specific components are organized within their respective page directories:
+
+- [app/profile/components](mdc:app/profile/components): user profile components
+- [pages/Home/Components](mdc:pages/Home/Components): home page components
+
+when creating new components, follow the existing patterns and organization.

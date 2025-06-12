@@ -1,0 +1,23 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# project overview
+
+this is a next.js e-commerce application for selling phones and accessories called "phono".
+
+## key files
+
+- [next.config.ts](mdc:next.config.ts): next.js configuration
+- [package.json](mdc:package.json): project dependencies
+- [tsconfig.json](mdc:tsconfig.json): typescript configuration
+- [README.md](mdc:README.md): project documentation
+
+## project structure
+
+the project appears to use both the newer next.js app router (in `/app`) and the legacy pages router (in `/pages`).
+
+shared components are located in the `/components` directory, while page-specific components are organized within their respective page directories.
+
+see [structure.md](mdc:structure.md) for a complete directory structure.
