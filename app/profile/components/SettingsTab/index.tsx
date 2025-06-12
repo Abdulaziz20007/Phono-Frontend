@@ -10,7 +10,6 @@ import {
 import PhoneNumberSection from "./PhoneNumberSection";
 import EmailSection from "./EmailSection";
 import AddressSection from "./AddressSection";
-import LanguageSection from "./LanguageSection";
 import AccountActionsSection from "./AccountActionsSection";
 import { useProfileData } from "../../hooks/useProfileData"; // <<<--- IMPORT QILAMIZ
 
@@ -23,7 +22,6 @@ interface SettingsTabProps {
   onEditEmail?: (emailId: number, newEmail: string) => void;
   onAddAddress: (newAddress: Omit<UserAddress, "id" | "user_id">) => void;
   onDeleteAddress: (addressId: number) => void;
-  onLanguageChange: (language: "ru" | "en" | "uz") => void;
   onLogout: () => void;
 }
 const SettingsContainer = styled.div`
@@ -42,7 +40,6 @@ export default function SettingsTab({
   onEditEmail,
   onAddAddress,
   onDeleteAddress,
-  onLanguageChange,
   onLogout,
 }: SettingsTabProps) {
   return (
@@ -62,10 +59,6 @@ export default function SettingsTab({
         addresses={user.addresses}
         onAdd={onAddAddress} // Hookdan olingan funksiya
         onDelete={onDeleteAddress} // Hookdan olingan funksiya
-      />
-      <LanguageSection
-        currentLanguage={user.appLanguage}
-        onLanguageChange={onLanguageChange}
       />
       <AccountActionsSection onLogout={onLogout} />
     </SettingsContainer>

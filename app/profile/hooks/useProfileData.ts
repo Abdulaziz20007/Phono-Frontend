@@ -370,6 +370,7 @@ export const useProfileData = () => {
           address: addressData.address,
           lat: addressData.lat || "0", // provide default value if missing
           long: addressData.long || "0", // provide default value if missing
+          region_id: addressData.region_id, // pass region_id
         };
 
         const newAddress = await api.user.addAddress(apiAddressData);
@@ -382,6 +383,7 @@ export const useProfileData = () => {
           lat: newAddress.lat || "0", // ensure non-null string
           long: newAddress.long || "0", // ensure non-null string
           user_id: newAddress.user_id,
+          region_id: newAddress.region_id, // assign region_id
         };
 
         setUser((prevUser) => {

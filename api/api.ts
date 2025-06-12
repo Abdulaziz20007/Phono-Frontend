@@ -59,8 +59,8 @@ export interface ApiResponse {
 
 const isBrowser = typeof window !== "undefined";
 
-// const BASE_URL = "http://localhost:3000";
-const BASE_URL = "https://api.phono.ligma.uz";
+export const BASE_URL = "http://localhost:3000";
+// export const BASE_URL = "https://api.phono.ligma.uz";
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -96,6 +96,16 @@ axiosInstance.interceptors.response.use(
 
 export const api = {
   auth: {
+    verifyEmail: async (uuid: string): Promise<{ message: string }> => {
+      try {
+        const response = await axiosInstance.get(`/email/verify/${uuid}`);
+        return response.data;
+      } catch (error) {
+        console.error("Email verification failed:", error);
+        throw error;
+      }
+    },
+
     register: async (userData: RegisterPayload): Promise<RegisterResponse> => {
       try {
         const response = await axiosInstance.post("/auth/register", userData);
@@ -435,6 +445,7 @@ export const api = {
       address: string;
       lat?: string;
       long?: string;
+      region_id: number;
     }): Promise<{
       id: number;
       name: string;
@@ -442,6 +453,7 @@ export const api = {
       lat: string | null;
       long: string | null;
       user_id: number;
+      region_id: number;
     }> => {
       try {
         const response = await axiosInstance.post("/address", addressData);

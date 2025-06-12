@@ -41,6 +41,7 @@ export interface UserAddress {
   lat: string; // non-nullable string per prisma schema
   long: string; // non-nullable string per prisma schema
   user_id: number;
+  region_id: number; // added for region selection
 }
 
 export interface Ad {

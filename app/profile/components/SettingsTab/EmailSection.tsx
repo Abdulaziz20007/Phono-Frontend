@@ -311,7 +311,7 @@ export default function EmailSection({
       <SectionContent $isOpen={isOpen}>
         <ItemList>
           {emails.map((email) => (
-            <Item key={email.email}>
+            <Item key={email.id}>
               <EmailInfo>
                 <span>{email.email}</span>
                 {email.is_active ? (

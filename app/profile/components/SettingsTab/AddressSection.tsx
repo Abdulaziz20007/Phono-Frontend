@@ -1,5 +1,5 @@
 // app/profile/components/SettingsTab/AddressSection.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { UserAddress } from "../../types";
 import {
@@ -18,15 +18,16 @@ import {
 } from "../../components/ui/SharedComponents";
 import ConfirmDeleteModal from "./modals/ConfirmDeleteModal";
 import GoogleMapsSelector from "./GoogleMapsSelector";
+import { fetchAppData, Region } from "../../../../api/api";
 
 interface AddAddressModalProps {
   onClose: () => void;
-  // update onsave to include lat and long
   onSave: (addressData: {
     name: string;
     address: string;
     lat: string;
     long: string;
+    region_id: number;
   }) => void;
 }
 
@@ -164,8 +165,20 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
 }) => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
-  const [lat, setLat] = useState("41.299496"); // default tashkent coordinates
+  const [lat, setLat] = useState("41.299496");
   const [lng, setLng] = useState("69.240073");
+  const [regions, setRegions] = useState<Region[]>([]);
+  const [regionId, setRegionId] = useState<number | null>(null);
+  const [loadingRegions, setLoadingRegions] = useState(false);
+
+  useEffect(() => {
+    setLoadingRegions(true);
+    fetchAppData()
+      .then((data) => {
+        setRegions(data.regions || []);
+      })
+      .finally(() => setLoadingRegions(false));
+  }, []);
 
   const handleLocationSelect = (latitude: string, longitude: string) => {
     setLat(latitude);
@@ -173,16 +186,17 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
   };
 
   const handleSubmit = () => {
-    if (name.trim() && address.trim() && lat && lng) {
+    if (name.trim() && address.trim() && lat && lng && regionId !== null) {
       onSave({
         name,
         address,
         lat,
-        long: lng, // note: backend uses 'long' not 'lng'
+        long: lng,
+        region_id: regionId,
       });
     } else {
       alert(
-        "пожалуйста, заполните все поля и выберите местоположение на карте."
+        "пожалуйста, заполните все поля, выберите регион и местоположение на карте."
       );
     }
   };
@@ -204,9 +218,40 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
           placeholder="адрес (улица, дом, квартира)"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
-          style={{ marginBottom: "15px" }}
+          style={{ marginBottom: "10px" }}
         />
-
+        <div style={{ marginBottom: "15px" }}>
+          <label
+            style={{
+              fontWeight: 500,
+              color: "#444",
+              marginBottom: 4,
+              display: "block",
+            }}
+          >
+            Регион
+          </label>
+          <select
+            value={regionId ?? ""}
+            onChange={(e) => setRegionId(Number(e.target.value))}
+            disabled={loadingRegions}
+            style={{
+              width: "100%",
+              padding: "10px",
+              borderRadius: 4,
+              border: "1px solid #ccc",
+            }}
+          >
+            <option value="" disabled>
+              {loadingRegions ? "Загрузка регионов..." : "Выберите регион"}
+            </option>
+            {regions.map((region) => (
+              <option key={region.id} value={region.id}>
+                {region.name}
+              </option>
+            ))}
+          </select>
+        </div>
         <label
           style={{
             display: "block",
@@ -217,13 +262,11 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
         >
           выберите местоположение на карте
         </label>
-
         <GoogleMapsSelector
           onLocationSelect={handleLocationSelect}
           initialLat={lat}
           initialLng={lng}
         />
-
         <div
           style={{
             marginTop: "20px",
@@ -244,7 +287,6 @@ const AddAddressModal: React.FC<AddAddressModalProps> = ({
 
 interface AddressSectionProps {
   addresses: UserAddress[];
-  // onAdd propining tipi SettingsTabProps'dagi onAddAddress tipiga mos kelishi kerak
   onAdd: (newAddressData: Omit<UserAddress, "id" | "user_id">) => void;
   onDelete: (addressId: number) => void;
 }
@@ -259,7 +301,9 @@ export default function AddressSection({
   const [itemToDeleteId, setItemToDeleteId] = useState<number | null>(null); // Faqat ID ni saqlaymiz
   const [itemToDeleteName, setItemToDeleteName] = useState<string>(""); // O'chiriladigan nomni saqlaymiz
 
-  const handleAddAddress = (addressData: Omit<UserAddress, "id">) => {
+  const handleAddAddress = (
+    addressData: Omit<UserAddress, "id" | "user_id">
+  ) => {
     onAdd(addressData);
     setShowAddModal(false);
   };
@@ -275,13 +319,14 @@ export default function AddressSection({
     address: string;
     lat: string;
     long: string;
+    region_id: number;
   }) => {
-    // pass all the data including lat and long to the onAdd function
     onAdd({
       name: modalData.name,
       address: modalData.address,
       lat: modalData.lat,
       long: modalData.long,
+      region_id: modalData.region_id,
     });
     setShowAddModal(false);
   };
