@@ -59,8 +59,8 @@ export interface ApiResponse {
 
 const isBrowser = typeof window !== "undefined";
 
-const BASE_URL = "http://localhost:3000";
-// const BASE_URL = "https://api.phono.ligma.uz";
+// const BASE_URL = "http://localhost:3000";
+const BASE_URL = "https://api.phono.ligma.uz";
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
