@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useLayoutEffect,
+  Suspense,
+} from "react";
 import { useSearchParams } from "next/navigation";
 import { api } from "../../api/api";
 import { Product, Brand, HomepageData } from "../../api/types";
@@ -541,22 +547,27 @@ function Home() {
   return (
     <div className="home-page">
       <Header />
-      <main className="main-content">
-        <Search
-          onSearch={handleSearchResults}
-          setLoading={setLoading}
-          setError={setError}
-          homepageData={homepageData}
-          onReset={handleReset}
-        />
-        <Categories brands={brands} onCategoryClick={handleCategoryClick} />
-        <ProductListing
-          products={products}
-          brands={brands}
-          favoriteProductIds={favoriteProductIds}
-          isSearchResults={isSearchResults}
-          isLoading={loading}
-        />
+      <main>
+        <Categories brands={brands} />
+        <Suspense fallback={<div>Загрузка поиска...</div>}>
+          <Search
+            onSearch={handleSearchResults}
+            setLoading={setLoading}
+            setError={setError}
+            homepageData={homepageData}
+            onReset={handleReset}
+          />
+        </Suspense>
+        <Suspense fallback={<div>Загрузка объявлений...</div>}>
+          <ProductListing
+            products={products}
+            brands={brands}
+            favoriteProductIds={favoriteProductIds}
+            isAuthenticated={isAuthenticated}
+            isSearchResults={isSearchResults}
+            isLoading={loading}
+          />
+        </Suspense>
       </main>
       <Footer />
     </div>

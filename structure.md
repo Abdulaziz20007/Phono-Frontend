@@ -77,7 +77,7 @@ new-phono/
     Auth/               # authentication pages
     favorites.tsx       # redirects to profile page with favorites tab active
     Home/               # home page components (FIXED to prevent infinite search API calls, UPDATED to fetch and cache data)
-      Home.tsx          # main home page component (UPDATED to load and cache data from /web endpoint, FIXED favorites sync)
+      Home.tsx          # main home page component (UPDATED: now wraps Search and ProductListing in Suspense, passes brands to Categories)
       Home.scss         # home page styles
       Components/
         Components/
