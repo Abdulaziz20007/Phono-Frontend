@@ -548,7 +548,6 @@ function Home() {
     <div className="home-page">
       <Header />
       <main>
-        <Categories brands={brands} />
         <Suspense fallback={<div>Загрузка поиска...</div>}>
           <Search
             onSearch={handleSearchResults}
@@ -558,6 +557,7 @@ function Home() {
             onReset={handleReset}
           />
         </Suspense>
+        <Categories brands={brands} />
         <Suspense fallback={<div>Загрузка объявлений...</div>}>
           <ProductListing
             products={products}
