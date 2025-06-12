@@ -183,7 +183,6 @@ export default function ProfilePage() {
             onEditEmail={editEmail}
             onAddAddress={addAddress}
             onDeleteAddress={deleteAddress}
-            onLanguageChange={changeLanguage}
             onLogout={logoutUser}
           />
         );
