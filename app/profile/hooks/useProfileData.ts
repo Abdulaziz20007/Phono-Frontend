@@ -59,9 +59,11 @@ const mapApiProfileToLocalProfile = (
     phone: apiProfile.phone,
     avatar: apiProfile.avatar || "/images/placeholder-avatar.jpg",
     balance: apiProfile.balance,
-    usernameForDisplay: `${apiProfile.name} ${apiProfile.surname}`, // Generate a display name
+    currency_id: apiProfile.currency_id,
+    is_active: apiProfile.is_active,
+    usernameForDisplay: `${apiProfile.name} ${apiProfile.surname}`,
     dob: apiProfile.dob || null,
-    appLanguage: "ru", // Default to Russian if not provided by API
+    appLanguage: "ru",
     emails: Array.isArray(apiProfile.emails) ? apiProfile.emails : [],
     additional_phones: Array.isArray(apiProfile.additional_phones)
       ? apiProfile.additional_phones

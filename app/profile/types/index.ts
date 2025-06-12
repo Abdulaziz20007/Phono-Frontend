@@ -1,25 +1,20 @@
-// app/profile/types/index.ts
 export interface UserProfile {
   id: number;
   name: string;
   surname: string;
-  phone: string; // Asosiy telefon raqami (tahrirlanmasligi mumkin yoki alohida logika)
-  avatar?: string | null; // Rasm URL'i
-  balance: number; // Prisma'da Float
-  currency_id: number; // valyuta idsi (1: UZS, 2: USD)
-  is_active: boolean; // akkaunt aktivligi
-  // currency_id: number; // Kerak bo'lsa, UI'da valyutani ko'rsatish uchun
-  // is_active: boolean; // UI'da kerak bo'lmasligi mumkin
+  phone: string;
+  avatar?: string | null;
+  balance: number;
+  currency_id: number;
+  is_active: boolean;
 
-  // Qo'shimcha ma'lumotlar (relations)
-  emails: UserRegisteredEmail[]; // Prisma'dan `emails`
-  additional_phones: UserAdditionalPhone[]; // Prisma'dan `additional_phones`
-  addresses: UserAddress[]; // Prisma'dan `addresses`
+  emails: UserRegisteredEmail[];
+  additional_phones: UserAdditionalPhone[];
+  addresses: UserAddress[];
 
-  // Bizning UI'miz uchun qo'shimcha maydonlar (Prisma'da yo'q, lekin frontend logikasi uchun)
-  usernameForDisplay: string; // Masalan, "Rochel_123" kabi ko'rsatiladigan nom
-  dob?: string | null; // Tug'ilgan kun (YYYY-MM-DD formatida, Prisma'da alohida yo'q)
-  appLanguage: "ru" | "en" | "uz"; // Ilova tili
+  usernameForDisplay: string;
+  dob?: string | null;
+  appLanguage: "ru" | "en" | "uz";
 }
 
 export interface UserAdditionalPhone {
@@ -35,19 +30,18 @@ export interface UserRegisteredEmail {
   is_active: boolean;
 }
 
-// update to match prisma schema where lat and long are non-nullable strings
 export interface UserAddress {
   id: number;
-  name: string; // UI'da "Дом", "Офис" uchun
+  name: string;
   address: string;
-  lat: string; // non-nullable string per prisma schema
-  long: string; // non-nullable string per prisma schema
+  lat: string;
+  long: string;
   user_id: number;
-  region_id: number; // added for region selection
+  region_id: number;
 }
 
 export interface Ad {
-  id: string; // Yoki number, agar backend'dan kelsa
+  id: string;
   title: string;
   imageUrl: string;
   condition: "Новый" | "Б/У";
