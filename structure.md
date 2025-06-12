@@ -263,3 +263,7 @@ Fixed issues with the edit product page:
    - Better conditional rendering based on authentication and loading states
    - Improved status messages for different loading phases
    - Added proper error handling with user-friendly messages
+
+## App Router Compliance
+
+The app/page.tsx now wraps Home in Suspense for Next.js App Router compliance.
